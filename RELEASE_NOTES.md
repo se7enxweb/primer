@@ -176,6 +176,34 @@ eval($str);
 **Files moved:** `index.php` → `public/index.php`, `.htaccess` → `public/.htaccess`  
 **Documentation updated:** `README.md`, `INSTALL.md`
 
+#### `public/index.php` — SF_ROOT_DIR Path Calculation Fix
+
+The initial `public/index.php` in v1.5.0.2 contained a critical path calculation error:
+
+```php
+// WRONG — SF_ROOT_DIR pointed at public/ itself, not the project root
+define('SF_ROOT_DIR', realpath(__DIR__));
+```
+
+Because this file lives at `public/index.php`, `__DIR__` resolves to the `public/` directory.
+Setting `SF_ROOT_DIR` to `realpath(__DIR__)` meant the framework was looking for `lib/`, `apps/`,
+`config/`, and `vendor/` inside `public/` — they do not exist there. The correct value must be
+one level up: the project root.
+
+```php
+// CORRECT — navigate one level up from public/ to the project root
+$path = realpath(__DIR__);
+define('SF_ROOT_DIR', $path . '/../');
+```
+
+This was corrected in the same release. `SF_ROOT_DIR` now resolves to the project root directory
+regardless of what the web server sets as `DocumentRoot`. The comment block above the definition
+in `public/index.php` now explicitly documents this relationship.
+
+This class of bug is a common pitfall when migrating a symfony1 project from the flat-root layout
+(where `index.php` lived at the project root and `SF_ROOT_DIR = realpath(__DIR__)` was correct)
+to the `public/` layout (where the front controller is one level deeper and the path must ascend).
+
 **What changed:**  
 The front controller (`index.php`) and Apache rewrite rules (`.htaccess`) have been moved from
 the project root into a dedicated `public/` subdirectory. The web server `DocumentRoot` (Apache)
@@ -229,7 +257,7 @@ See [INSTALL.md](INSTALL.md) for complete virtual host examples.
 | `lib/validator/sfValidatorCSRFToken.class.php` | Use `hash_equals()` for CSRF validation |
 | `lib/form/sfForm.class.php` | Upgrade CSRF token to HMAC-SHA256 |
 | `lib/i18n/sfChoiceFormat.class.php` | Allowlist guard before `eval()` in set notation |
-| `index.php` → `public/index.php` | Move front controller to `public/` directory |
+| `index.php` → `public/index.php` | Move front controller to `public/`; fix `SF_ROOT_DIR` path calculation |
 | `.htaccess` → `public/.htaccess` | Move rewrite rules to `public/` directory |
 | `README.md` | Update DocumentRoot instructions and directory layout |
 | `INSTALL.md` | Update vhost examples, step-by-step guide, troubleshooting |

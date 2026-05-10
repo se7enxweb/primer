@@ -28,10 +28,18 @@
  * Constants follow symfony1 convention (SF_ROOT_DIR, SF_APP, SF_ENV, SF_DEBUG).
  */
 
-define('SF_ROOT_DIR', realpath(__DIR__));
+// ── Project root ──────────────────────────────────────────────────────────────
+// This file lives in public/index.php — one level below the project root.
+// __DIR__ resolves to /path/to/project/public at runtime.
+// SF_ROOT_DIR must point at the project root (/path/to/project), NOT at public/,
+// so that the framework can locate lib/, apps/, config/, vendor/, etc.
+// Using realpath() + '/../' navigates up one directory from public/ to root.
+$path = realpath(__DIR__);
+define('SF_ROOT_DIR', $path . '/../');
+
 define('SF_APP',      'site');
 define('SF_ENV',      'prod');
-define('SF_DEBUG',    true);
+define('SF_DEBUG',    false);
 
 // ── Core autoloader ───────────────────────────────────────────────────────────
 // Mirrors the require in config/ProjectConfiguration.class.php — registers
