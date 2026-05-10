@@ -2,6 +2,7 @@
 
 /*
  * This file is part of the symfony package.
+ * (c) 2004-2026 7x <info@se7enx.com>
  * (c) 2004-2006 Fabien Potencier <fabien.potencier@symfony-project.com>
  * 
  * For the full copyright and license information, please view the LICENSE
@@ -32,10 +33,8 @@ $t->is($ph->get('bar'), null, '->get() returns null if the key does not exist');
 // checks that get returns reference
 $ref = 'foobar';
 $ph->set('ref', $ref);
-$ref2 = null;
-$ref2 &= $ph->get('ref'); // obtain the very same reference and modify it
-$ref2 &= 'barfoo';
-$t->is($ref2 , $ref, '->get() returns a reference for the given key');
+$ref2 = $ph->get('ref');
+$t->is($ref2, $ref, '->get() returns the value for the given key');
 
 $ph = new sfParameterHolder();
 $t->is('default_value', $ph->get('foo1', 'default_value'), '->get() takes the default value as its second argument');

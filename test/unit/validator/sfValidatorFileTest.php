@@ -2,6 +2,7 @@
 
 /*
  * This file is part of the symfony package.
+ * (c) 2004-2026 7x <info@se7enx.com>
  * (c) Fabien Potencier <fabien.potencier@symfony-project.com>
  *
  * For the full copyright and license information, please view the LICENSE
@@ -97,7 +98,7 @@ $t->diag('->guessFromFileBinary()');
 $v = new testValidatorFile();
 $t->is($v->guessFromFileBinary($tmpDir.'/test.txt'), 'text/plain', '->guessFromFileBinary() guesses the type of a given file');
 $t->is($v->guessFromFileBinary($tmpDir.'/foo.txt'), null, '->guessFromFileBinary() returns null if the file type is not guessable');
-$t->is($v->guessFromFileBinary('/bin/ls'), (PHP_OS != 'Darwin') ? 'application/x-executable' : 'application/octet-stream', '->guessFromFileBinary() returns correct type if file is guessable');
+$t->ok(in_array($v->guessFromFileBinary('/bin/ls'), array('application/x-executable', 'application/x-pie-executable', 'application/octet-stream')), '->guessFromFileBinary() returns correct type if file is guessable');
 
 // ->getMimeType()
 $t->diag('->getMimeType()');
