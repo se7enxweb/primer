@@ -1286,12 +1286,6 @@ Ensure the PHP PDO extension for your database is enabled (`php -m | grep pdo`).
 
 ---
 
-**Q: Where is the live demo?**
-A: [https://symfony.alpha.se7enx.com/](https://symfony.alpha.se7enx.com/) — `/version` shows a live
-status dashboard confirming all core symfony1 classes load correctly on PHP 8.5.
-
----
-
 **Q: How do I get commercial support?**
 A: Contact [support@se7enx.com](mailto:support@se7enx.com) or visit [se7enx.com](https://se7enx.com/).
 

@@ -56,7 +56,6 @@ The `1.5` branch is the current active development branch. Work focuses on:
 - Composer package manager integration alongside sfCoreAutoload
 - Security patches and vulnerability triage
 - Documentation and developer experience improvements
-- Live test-install demonstration at [symfony.alpha.se7enx.com](https://symfony.alpha.se7enx.com/)
 
 ---
 
@@ -221,8 +220,6 @@ composer install
 #    GET /version  → live status dashboard (all 8 core class checks)
 ```
 
-Live reference: **https://symfony.alpha.se7enx.com/**
-
 ---
 
 ## 9. Main Features
@@ -369,7 +366,6 @@ If you discover a security issue, please report it responsibly by email to
 | Resource | URL |
 |----------|-----|
 | Repository | github.com/se7enxweb/symfony1 |
-| Live Demo | symfony.alpha.se7enx.com |
 | Release Notes | RELEASE_NOTES.md |
 | Installation Guide | INSTALL.md |
 | Issue Tracker | github.com/se7enxweb/symfony1/issues |

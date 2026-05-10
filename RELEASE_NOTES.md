@@ -4,8 +4,7 @@
 **Branch:** `1.5`  
 **Date:** 2026-05-09  
 **Maintainer:** [7x](https://se7enx.com) — [info@se7enx.com](mailto:info@se7enx.com)  
-**Repository:** https://github.com/se7enxweb/symfony1  
-**Live demo:** https://symfony.alpha.se7enx.com/version
+**Repository:** https://github.com/se7enxweb/symfony1
 
 ---
 
@@ -147,7 +146,7 @@ Both sfCoreAutoload and Composer's PSR-4/classmap loader coexist via PHP's `spl_
 
 ## New: Live Test-Install Site
 
-A reference symfony1 application is live at **https://symfony.alpha.se7enx.com/version** demonstrating:
+A reference symfony1 application is available for local installation demonstrating:
 
 - Full symfony1 routing → action → view → layout pipeline on PHP 8.5
 - Real framework classes: `sfPatternRouting`, `sfRoute`, `sfInflector`, `sfParameterHolder`, `sfView`
