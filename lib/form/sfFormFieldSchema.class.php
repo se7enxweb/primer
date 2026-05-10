@@ -2,6 +2,7 @@
 
 /*
  * This file is part of the symfony package.
+ * (c) 2004-2026 7x <info@se7enx.com>
  * (c) Fabien Potencier <fabien.potencier@symfony-project.com>
  * 
  * For the full copyright and license information, please view the LICENSE
@@ -32,7 +33,7 @@ class sfFormFieldSchema extends sfFormField implements ArrayAccess, Iterator, Co
    * @param string             $value  The field value
    * @param sfValidatorError   $error  A sfValidatorError instance
    */
-  public function __construct(sfWidgetFormSchema $widget, sfFormField $parent = null, $name, $value, sfValidatorError $error = null)
+  public function __construct(sfWidgetFormSchema $widget, ?sfFormField $parent, $name, $value, ?sfValidatorError $error = null)
   {
     parent::__construct($widget, $parent, $name, $value, $error);
 

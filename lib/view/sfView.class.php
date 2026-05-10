@@ -2,6 +2,7 @@
 
 /*
  * This file is part of the symfony package.
+ * (c) 2004-2026 7x <info@se7enx.com>
  * (c) 2004-2006 Fabien Potencier <fabien.potencier@symfony-project.com>
  * (c) 2004-2006 Sean Kerr <sean@code-box.org>
  *
@@ -325,7 +326,7 @@ abstract class sfView
    */
   public function setDecorator($boolean)
   {
-    $this->decorator = (boolean) $boolean;
+    $this->decorator = (bool) $boolean;
 
     if (false === $boolean)
     {

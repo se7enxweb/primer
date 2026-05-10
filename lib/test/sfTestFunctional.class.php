@@ -2,6 +2,7 @@
 
 /*
  * This file is part of the symfony package.
+ * (c) 2004-2026 7x <info@se7enx.com>
  * (c) Fabien Potencier <fabien.potencier@symfony-project.com>
  *
  * For the full copyright and license information, please view the LICENSE
@@ -24,7 +25,7 @@ class sfTestFunctional extends sfTestFunctionalBase
    * @param sfBrowserBase $browser A sfBrowserBase instance
    * @param lime_test     $lime    A lime instance
    */
-  public function __construct(sfBrowserBase $browser, lime_test $lime = null, $testers = array())
+  public function __construct(sfBrowserBase $browser, ?lime_test $lime = null, $testers = array())
   {
     $testers = array_merge(array(
       'view_cache' => 'sfTesterViewCache',

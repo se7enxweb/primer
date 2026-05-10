@@ -2,6 +2,7 @@
 
 /*
  * This file is part of the symfony package.
+ * (c) 2004-2026 7x <info@se7enx.com>
  * (c) Fabien Potencier <fabien.potencier@symfony-project.com>
  *
  * For the full copyright and license information, please view the LICENSE
@@ -22,8 +23,7 @@ abstract class sfApplicationConfiguration extends ProjectConfiguration
     $coreLoaded    = false,
     $loadedHelpers = array();
 
-  protected
-    $configCache = null,
+  protected $configCache = null,
     $application = null,
     $environment = null,
     $debug       = false,
@@ -38,10 +38,10 @@ abstract class sfApplicationConfiguration extends ProjectConfiguration
    * @param string            $rootDir        The project root directory
    * @param sfEventDispatcher $dispatcher     An event dispatcher
    */
-  public function __construct($environment, $debug, $rootDir = null, sfEventDispatcher $dispatcher = null)
+  public function __construct($environment, $debug, $rootDir = null, ?sfEventDispatcher $dispatcher = null)
   {
     $this->environment = $environment;
-    $this->debug       = (boolean) $debug;
+    $this->debug       = (bool) $debug;
     $this->application = str_replace('Configuration', '', get_class($this));
 
     parent::__construct($rootDir, $dispatcher);

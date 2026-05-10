@@ -2,6 +2,7 @@
 
 /*
  * This file is part of the symfony package.
+ * (c) 2004-2026 7x <info@se7enx.com>
  * (c) Fabien Potencier <fabien.potencier@symfony-project.com>
  *
  * For the full copyright and license information, please view the LICENSE
@@ -18,11 +19,9 @@
  */
 class sfFormField
 {
-  protected static
-    $toStringException = null;
+  protected static $toStringException = null;
 
-  protected
-    $widget = null,
+  protected $widget = null,
     $parent = null,
     $name   = '',
     $value  = null,
@@ -37,7 +36,7 @@ class sfFormField
    * @param string           $value  The field value
    * @param sfValidatorError $error  A sfValidatorError instance
    */
-  public function __construct(sfWidgetForm $widget, sfFormField $parent = null, $name, $value, sfValidatorError $error = null)
+  public function __construct(sfWidgetForm $widget, ?sfFormField $parent, $name, $value, ?sfValidatorError $error = null)
   {
     $this->widget = $widget;
     $this->parent = $parent;
@@ -320,6 +319,6 @@ class sfFormField
    */
   public function hasError()
   {
-    return null !== $this->error && count($this->error);
+    return null !== $this->error && (is_array($this->error) || $this->error instanceof Countable ? count($this->error) : true);
   }
 }

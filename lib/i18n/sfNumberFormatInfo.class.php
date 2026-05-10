@@ -6,6 +6,7 @@
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the BSD License.
  *
+ * (c) 2004-2026 7x <info@se7enx.com>
  * Copyright(c) 2004 by Qiang Xue. All rights reserved.
  *
  * To contact the author write to {@link mailto:qiang.xue@gmail.com Qiang Xue}
@@ -316,7 +317,7 @@ class sfNumberFormatInfo
         // to find the groupsize 1.
         for ($i = strlen($pattern) - 1; $i >= 0; $i--)
         {
-          if ($pattern{$i} == $digit || $pattern{$i} == $hash)
+          if ($pattern[$i] == $digit || $pattern[$i] == $hash)
           {
             $groupSize1 = $i - $groupPos1;
             break;
@@ -335,11 +336,11 @@ class sfNumberFormatInfo
     {
       for ($i = strlen($pattern) - 1; $i >= 0; $i--)
       {
-        if ($pattern{$i} == $dot)
+        if ($pattern[$i] == $dot)
         {
           break;
         }
-        if ($pattern{$i} == $digit)
+        if ($pattern[$i] == $digit)
         {
           $decimalPoints = $i - $decimalPos;
           break;

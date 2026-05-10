@@ -2,6 +2,7 @@
 
 /*
  * This file is part of the symfony package.
+ * (c) 2004-2026 7x <info@se7enx.com>
  * (c) Fabien Potencier <fabien.potencier@symfony-project.com>
  *
  * For the full copyright and license information, please view the LICENSE
@@ -18,8 +19,7 @@
  */
 class sfProjectConfiguration
 {
-  protected
-    $rootDir               = null,
+  protected $rootDir               = null,
     $symfonyLibDir         = null,
     $dispatcher            = null,
     $plugins               = array(),
@@ -28,8 +28,7 @@ class sfProjectConfiguration
     $pluginConfigurations  = array(),
     $pluginsLoaded         = false;
 
-  static protected
-    $active = null;
+  protected static $active = null;
 
   /**
    * Constructor.
@@ -37,7 +36,7 @@ class sfProjectConfiguration
    * @param string              $rootDir    The project root directory
    * @param sfEventDispatcher   $dispatcher The event dispatcher
    */
-  public function __construct($rootDir = null, sfEventDispatcher $dispatcher = null)
+  public function __construct($rootDir = null, ?sfEventDispatcher $dispatcher = null)
   {
     if (null === self::$active || $this instanceof sfApplicationConfiguration)
     {
@@ -595,7 +594,7 @@ class sfProjectConfiguration
    *
    * @return sfApplicationConfiguration A sfApplicationConfiguration instance
    */
-  static public function getApplicationConfiguration($application, $environment, $debug, $rootDir = null, sfEventDispatcher $dispatcher = null)
+  static public function getApplicationConfiguration($application, $environment, $debug, $rootDir = null, ?sfEventDispatcher $dispatcher = null)
   {
     $class = $application.'Configuration';
 

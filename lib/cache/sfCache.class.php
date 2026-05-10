@@ -2,6 +2,7 @@
 
 /*
  * This file is part of the symfony package.
+ * (c) 2004-2026 7x <info@se7enx.com>
  * (c) 2004-2006 Fabien Potencier <fabien.potencier@symfony-project.com>
  *
  * For the full copyright and license information, please view the LICENSE
@@ -46,7 +47,7 @@ abstract class sfCache
    *   cache files when a new cache file is written.
    *     0               => no automatic cache cleaning
    *     1               => systematic cache cleaning
-   *     x (integer) > 1 => automatic cleaning randomly 1 times on x cache write
+   *     x (int) > 1 => automatic cleaning randomly 1 times on x cache write
    *
    * * lifetime (optional): The default life time (default value: 86400)
    *

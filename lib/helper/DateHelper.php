@@ -2,6 +2,7 @@
 
 /*
  * This file is part of the symfony package.
+ * (c) 2004-2026 7x <info@se7enx.com>
  * (c) 2004-2006 Fabien Potencier <fabien.potencier@symfony-project.com>
  *
  * For the full copyright and license information, please view the LICENSE
@@ -17,7 +18,7 @@
  * @version    SVN: $Id: DateHelper.php 23810 2009-11-12 11:07:44Z Kris.Wallsmith $
  */
 
-function format_daterange($start_date, $end_date, $format = 'd', $full_text, $start_text, $end_text, $culture = null, $charset = null)
+function format_daterange($start_date, $end_date, $full_text, $start_text, $end_text, $format = 'd', $culture = null, $charset = null)
 {
   if ($start_date != '' && $end_date != '')
   {

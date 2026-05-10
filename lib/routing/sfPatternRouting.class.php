@@ -2,6 +2,7 @@
 
 /*
  * This file is part of the symfony package.
+ * (c) 2004-2026 7x <info@se7enx.com>
  * (c) Fabien Potencier <fabien.potencier@symfony-project.com>
  *
  * For the full copyright and license information, please view the LICENSE
@@ -20,8 +21,7 @@
  */
 class sfPatternRouting extends sfRouting
 {
-  protected
-    $currentRouteName   = null,
+  protected $currentRouteName   = null,
     $currentInternalUri = array(),
     $routes             = array(),
     $defaultParamsDirty = false,
@@ -45,7 +45,7 @@ class sfPatternRouting extends sfRouting
    *
    * @see sfRouting
    */
-  public function initialize(sfEventDispatcher $dispatcher, sfCache $cache = null, $options = array())
+  public function initialize(sfEventDispatcher $dispatcher, ?sfCache $cache = null, $options = array())
   {
     $options = array_merge(array(
       'variable_prefixes'                => array(':'),

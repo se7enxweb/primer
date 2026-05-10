@@ -2,6 +2,7 @@
 
 /*
  * This file is part of the symfony package.
+ * (c) 2004-2026 7x <info@se7enx.com>
  * (c) 2004-2006 Fabien Potencier <fabien.potencier@symfony-project.com>
  *
  * For the full copyright and license information, please view the LICENSE
@@ -18,8 +19,7 @@
  */
 class sfI18N
 {
-  protected
-    $configuration = null,
+  protected $configuration = null,
     $dispatcher    = null,
     $cache         = null,
     $options       = array(),
@@ -32,7 +32,7 @@ class sfI18N
    *
    * @see initialize()
    */
-  public function __construct(sfApplicationConfiguration $configuration, sfCache $cache = null, $options = array())
+  public function __construct(sfApplicationConfiguration $configuration, ?sfCache $cache = null, $options = array())
   {
     $this->initialize($configuration, $cache, $options);
   }
@@ -53,7 +53,7 @@ class sfI18N
    * @param sfCache                    $cache           A sfCache instance
    * @param array                      $options         An array of options
    */
-  public function initialize(sfApplicationConfiguration $configuration, sfCache $cache = null, $options = array())
+  public function initialize(sfApplicationConfiguration $configuration, ?sfCache $cache = null, $options = array())
   {
     $this->configuration = $configuration;
     $this->dispatcher = $configuration->getEventDispatcher();

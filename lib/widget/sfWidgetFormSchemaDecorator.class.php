@@ -2,6 +2,7 @@
 
 /*
  * This file is part of the symfony package.
+ * (c) 2004-2026 7x <info@se7enx.com>
  * (c) Fabien Potencier <fabien.potencier@symfony-project.com>
  *
  * For the full copyright and license information, please view the LICENSE
@@ -18,8 +19,7 @@
  */
 class sfWidgetFormSchemaDecorator extends sfWidgetFormSchema
 {
-  protected
-    $widget    = null,
+  protected $widget    = null,
     $decorator = '';
 
   /**
@@ -275,7 +275,7 @@ class sfWidgetFormSchemaDecorator extends sfWidgetFormSchema
   /**
    * @see sfWidgetFormSchema
    */
-  public function setParent(sfWidgetFormSchema $parent = null)
+  public function setParent(?sfWidgetFormSchema $parent = null)
   {
     $this->widget->setParent($parent);
 

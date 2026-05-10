@@ -2,6 +2,7 @@
 
 /*
  * This file is part of the symfony package.
+ * (c) 2004-2026 7x <info@se7enx.com>
  * (c) 2004-2006 Fabien Potencier <fabien.potencier@symfony-project.com>
  *
  * For the full copyright and license information, please view the LICENSE
@@ -126,7 +127,7 @@ EOF;
     $this->getFilesystem()->replaceTokens($finder->in($appDir.'/config'), '##', '##', array(
       'NO_SCRIPT_NAME'    => $firstApp ? 'true' : 'false',
       'CSRF_SECRET'       => sfYamlInline::dump(sfYamlInline::parseScalar($options['csrf-secret'])),
-      'ESCAPING_STRATEGY' => sfYamlInline::dump((boolean) sfYamlInline::parseScalar($options['escaping-strategy'])),
+      'ESCAPING_STRATEGY' => sfYamlInline::dump((bool) sfYamlInline::parseScalar($options['escaping-strategy'])),
       'USE_DATABASE'      => sfConfig::has('sf_orm') ? 'true' : 'false',
     ));
 

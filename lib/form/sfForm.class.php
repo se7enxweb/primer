@@ -2,6 +2,7 @@
 
 /*
  * This file is part of the symfony package.
+ * (c) 2004-2026 7x <info@se7enx.com>
  * (c) Fabien Potencier <fabien.potencier@symfony-project.com>
  *
  * For the full copyright and license information, please view the LICENSE
@@ -32,8 +33,7 @@ class sfForm implements ArrayAccess, Iterator, Countable
     $CSRFFieldName     = '_csrf_token',
     $toStringException = null;
 
-  protected
-    $widgetSchema    = null,
+  protected $widgetSchema    = null,
     $validatorSchema = null,
     $errorSchema     = null,
     $formFieldSchema = null,
@@ -200,7 +200,7 @@ class sfForm implements ArrayAccess, Iterator, Countable
    * @param array $taintedValues  An array of input values
    * @param array $taintedFiles   An array of uploaded files (in the $_FILES or $_GET format)
    */
-  public function bind(array $taintedValues = null, array $taintedFiles = null)
+  public function bind(?array $taintedValues = null, ?array $taintedFiles = null)
   {
     $this->taintedValues = $taintedValues;
     $this->taintedFiles  = $taintedFiles;
@@ -522,7 +522,7 @@ class sfForm implements ArrayAccess, Iterator, Countable
    *
    * @param sfValidatorBase $validator A validator to be merged
    */
-  public function mergePreValidator(sfValidatorBase $validator = null)
+  public function mergePreValidator(?sfValidatorBase $validator = null)
   {
     if (null === $validator)
     {
@@ -547,7 +547,7 @@ class sfForm implements ArrayAccess, Iterator, Countable
    *
    * @param sfValidatorBase $validator A validator to be merged
    */
-  public function mergePostValidator(sfValidatorBase $validator = null)
+  public function mergePostValidator(?sfValidatorBase $validator = null)
   {
     if (null === $validator)
     {
@@ -910,7 +910,7 @@ class sfForm implements ArrayAccess, Iterator, Countable
    */
   public function isCSRFProtected()
   {
-    return null !== $this->validatorSchema[self::$CSRFFieldName];
+    return null !== $this->validatorSchema && null !== $this->validatorSchema[self::$CSRFFieldName];
   }
 
   /**

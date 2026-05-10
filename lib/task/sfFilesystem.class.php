@@ -2,6 +2,7 @@
 
 /*
  * This file is part of the symfony package.
+ * (c) 2004-2026 7x <info@se7enx.com>
  * (c) 2004-2006 Fabien Potencier <fabien.potencier@symfony-project.com>
  *
  * For the full copyright and license information, please view the LICENSE
@@ -18,8 +19,7 @@
  */
 class sfFilesystem
 {
-  protected
-    $dispatcher = null,
+  protected $dispatcher = null,
     $formatter  = null;
 
   /**
@@ -28,7 +28,7 @@ class sfFilesystem
    * @param sfEventDispatcher $dispatcher  An sfEventDispatcher instance
    * @param sfFormatter       $formatter   An sfFormatter instance
    */
-  public function __construct(sfEventDispatcher $dispatcher = null, sfFormatter $formatter = null)
+  public function __construct(?sfEventDispatcher $dispatcher = null, ?sfFormatter $formatter = null)
   {
     $this->dispatcher = $dispatcher;
     $this->formatter = $formatter;

@@ -6,6 +6,7 @@
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the BSD License.
  *
+ * (c) 2004-2026 7x <info@se7enx.com>
  * Copyright(c) 2004 by Qiang Xue. All rights reserved.
  *
  * To contact the author write to {@link mailto:qiang.xue@gmail.com Qiang Xue}
@@ -193,7 +194,7 @@ class sfNumberFormat
       // now for the integer groupings
       for ($i = 0; $i < $len; $i++)
       {
-        $char = $string{$len - $i - 1};
+        $char = $string[$len - $i - 1];
 
         if ($multiGroup && $count == 0)
         {

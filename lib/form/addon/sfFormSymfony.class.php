@@ -2,6 +2,7 @@
 
 /*
  * This file is part of the symfony package.
+ * (c) 2004-2026 7x <info@se7enx.com>
  * (c) Fabien Potencier <fabien.potencier@symfony-project.com>
  *
  * For the full copyright and license information, please view the LICENSE
@@ -18,8 +19,7 @@
  */
 class sfFormSymfony extends sfForm
 {
-  static protected
-    $dispatcher = null;
+  protected static $dispatcher = null;
 
   /**
    * Constructor.
@@ -43,7 +43,7 @@ class sfFormSymfony extends sfForm
    *
    * @param sfEventDispatcher $dispatcher
    */
-  static public function setEventDispatcher(sfEventDispatcher $dispatcher = null)
+  static public function setEventDispatcher(?sfEventDispatcher $dispatcher = null)
   {
     self::$dispatcher = $dispatcher;
   }

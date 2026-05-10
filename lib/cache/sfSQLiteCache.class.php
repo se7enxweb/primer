@@ -2,6 +2,7 @@
 
 /*
  * This file is part of the symfony package.
+ * (c) 2004-2026 7x <info@se7enx.com>
  * (c) 2004-2006 Fabien Potencier <fabien.potencier@symfony-project.com>
  * 
  * For the full copyright and license information, please view the LICENSE
@@ -73,7 +74,7 @@ class sfSQLiteCache extends sfCache
    */
   public function has($key)
   {
-    return (boolean) $this->dbh->query(sprintf("SELECT key FROM cache WHERE key = '%s' AND timeout > %d", sqlite_escape_string($key), time()))->numRows();
+    return (bool) $this->dbh->query(sprintf("SELECT key FROM cache WHERE key = '%s' AND timeout > %d", sqlite_escape_string($key), time()))->numRows();
   }
 
   /**
@@ -86,7 +87,7 @@ class sfSQLiteCache extends sfCache
       $this->clean(sfCache::OLD);
     }
 
-    return (boolean) $this->dbh->query(sprintf("INSERT OR REPLACE INTO cache (key, data, timeout, last_modified) VALUES ('%s', '%s', %d, %d)", sqlite_escape_string($key), sqlite_escape_string($data), time() + $this->getLifetime($lifetime), time()));
+    return (bool) $this->dbh->query(sprintf("INSERT OR REPLACE INTO cache (key, data, timeout, last_modified) VALUES ('%s', '%s', %d, %d)", sqlite_escape_string($key), sqlite_escape_string($data), time() + $this->getLifetime($lifetime), time()));
   }
 
   /**
@@ -94,7 +95,7 @@ class sfSQLiteCache extends sfCache
    */
   public function remove($key)
   {
-    return (boolean) $this->dbh->query(sprintf("DELETE FROM cache WHERE key = '%s'", sqlite_escape_string($key)));
+    return (bool) $this->dbh->query(sprintf("DELETE FROM cache WHERE key = '%s'", sqlite_escape_string($key)));
   }
 
   /**
@@ -102,7 +103,7 @@ class sfSQLiteCache extends sfCache
    */
   public function removePattern($pattern)
   {
-    return (boolean) $this->dbh->query(sprintf("DELETE FROM cache WHERE REGEXP('%s', key)", sqlite_escape_string(self::patternToRegexp($pattern))));
+    return (bool) $this->dbh->query(sprintf("DELETE FROM cache WHERE REGEXP('%s', key)", sqlite_escape_string(self::patternToRegexp($pattern))));
   }
 
   /**
@@ -110,7 +111,7 @@ class sfSQLiteCache extends sfCache
    */
   public function clean($mode = sfCache::ALL)
   {
-    return (boolean) $this->dbh->query("DELETE FROM cache".(sfCache::OLD == $mode ? sprintf(" WHERE timeout < '%s'", time()) : ''))->numRows();
+    return (bool) $this->dbh->query("DELETE FROM cache".(sfCache::OLD == $mode ? sprintf(" WHERE timeout < '%s'", time()) : ''))->numRows();
   }
 
   /**

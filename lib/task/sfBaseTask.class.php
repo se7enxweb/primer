@@ -2,6 +2,7 @@
 
 /*
  * This file is part of the symfony package.
+ * (c) 2004-2026 7x <info@se7enx.com>
  * (c) 2004-2006 Fabien Potencier <fabien.potencier@symfony-project.com>
  *
  * For the full copyright and license information, please view the LICENSE
@@ -18,8 +19,7 @@
  */
 abstract class sfBaseTask extends sfCommandApplicationTask
 {
-  protected
-    $configuration = null,
+  protected $configuration = null,
     $pluginManager = null;
 
   /**
@@ -77,7 +77,7 @@ abstract class sfBaseTask extends sfCommandApplicationTask
    *
    * @param sfProjectConfiguration $configuration
    */
-  public function setConfiguration(sfProjectConfiguration $configuration = null)
+  public function setConfiguration(?sfProjectConfiguration $configuration = null)
   {
     $this->configuration = $configuration;
   }

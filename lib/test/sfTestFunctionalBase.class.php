@@ -4,6 +4,7 @@ require_once(dirname(__FILE__).'/../vendor/lime/lime.php');
 
 /*
  * This file is part of the symfony package.
+ * (c) 2004-2026 7x <info@se7enx.com>
  * (c) Fabien Potencier <fabien.potencier@symfony-project.com>
  *
  * For the full copyright and license information, please view the LICENSE
@@ -26,8 +27,7 @@ abstract class sfTestFunctionalBase
     $currentTester = null,
     $browser       = null;
 
-  protected static
-    $test = null;
+  protected static $test = null;
 
   /**
    * Initializes the browser tester instance.
@@ -35,7 +35,7 @@ abstract class sfTestFunctionalBase
    * @param sfBrowserBase $browser A sfBrowserBase instance
    * @param lime_test     $lime    A lime instance
    */
-  public function __construct(sfBrowserBase $browser, lime_test $lime = null, $testers = array())
+  public function __construct(sfBrowserBase $browser, ?lime_test $lime = null, $testers = array())
   {
     $this->browser = $browser;
 
@@ -480,7 +480,7 @@ abstract class sfTestFunctionalBase
    *
    * @param Exception $exception The exception
    */
-  function handleException(Exception $exception)
+  function handleException(\Throwable $exception)
   {
     $this->test()->error(sprintf('%s: %s', get_class($exception), $exception->getMessage()));
 

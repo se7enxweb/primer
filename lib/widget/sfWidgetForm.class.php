@@ -2,6 +2,7 @@
 
 /*
  * This file is part of the symfony package.
+ * (c) 2004-2026 7x <info@se7enx.com>
  * (c) Fabien Potencier <fabien.potencier@symfony-project.com>
  *
  * For the full copyright and license information, please view the LICENSE
@@ -18,8 +19,7 @@
  */
 abstract class sfWidgetForm extends sfWidget
 {
-  protected
-    $parent   = null;
+  protected $parent   = null;
 
   /**
    * Constructor.
@@ -139,7 +139,7 @@ abstract class sfWidgetForm extends sfWidget
    */
   public function setHidden($boolean)
   {
-    $this->setOption('is_hidden', (boolean) $boolean);
+    $this->setOption('is_hidden', (bool) $boolean);
 
     return $this;
   }
@@ -282,7 +282,7 @@ abstract class sfWidgetForm extends sfWidget
    *
    * @return sfWidgetForm The current widget instance
    */
-  public function setParent(sfWidgetFormSchema $widgetSchema = null)
+  public function setParent(?sfWidgetFormSchema $widgetSchema = null)
   {
     $this->parent = $widgetSchema;
 

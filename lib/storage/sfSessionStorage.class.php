@@ -2,6 +2,7 @@
 
 /*
  * This file is part of the symfony package.
+ * (c) 2004-2026 7x <info@se7enx.com>
  * (c) 2004-2006 Fabien Potencier <fabien.potencier@symfony-project.com>
  * (c) 2004-2006 Sean Kerr <sean@code-box.org>
  * 
@@ -71,7 +72,7 @@ class sfSessionStorage extends sfStorage
 
     session_name($sessionName);
 
-    if (!(boolean) ini_get('session.use_cookies') && $sessionId = $this->options['session_id'])
+    if (!(bool) ini_get('session.use_cookies') && $sessionId = $this->options['session_id'])
     {
       session_id($sessionId);
     }

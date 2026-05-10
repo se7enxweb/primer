@@ -2,6 +2,7 @@
 
 /*
  * This file is part of the symfony package.
+ * (c) 2004-2026 7x <info@se7enx.com>
  * (c) Fabien Potencier <fabien.potencier@symfony-project.com>
  * 
  * For the full copyright and license information, please view the LICENSE
@@ -87,7 +88,7 @@ class sfEvent implements ArrayAccess
    */
   public function setProcessed($processed)
   {
-    $this->processed = (boolean) $processed;
+    $this->processed = (bool) $processed;
   }
 
   /**

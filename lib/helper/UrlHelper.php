@@ -2,6 +2,7 @@
 
 /*
  * This file is part of the symfony package.
+ * (c) 2004-2026 7x <info@se7enx.com>
  * (c) 2004-2006 Fabien Potencier <fabien.potencier@symfony-project.com>
  * 
  * For the full copyright and license information, please view the LICENSE
@@ -44,7 +45,7 @@ function link_to1($name, $internal_uri, $options = array())
   }
   if (isset($html_options['absolute']))
   {
-    $absolute = (boolean) $html_options['absolute'];
+    $absolute = (bool) $html_options['absolute'];
     unset($html_options['absolute']);
   }
 
@@ -632,7 +633,7 @@ function _encodeText($text)
 
   for ($i = 0; $i < strlen($text); $i++)
   {
-    $char = $text{$i};
+    $char = $text[$i];
     $r = rand(0, 100);
 
     # roughly 10% raw, 45% hex, 45% dec

@@ -2,6 +2,7 @@
 
 /*
  * This file is part of the symfony package.
+ * (c) 2004-2026 7x <info@se7enx.com>
  * (c) Fabien Potencier <fabien.potencier@symfony-project.com>
  *
  * For the full copyright and license information, please view the LICENSE
@@ -28,7 +29,7 @@ class sfFormatter
       if (function_exists('shell_exec'))
       {
         // this is tricky because "tput cols 2>&1" is not accurate
-        $maxLineSize = ctype_digit(trim(shell_exec('tput cols 2>&1'))) ? (integer) shell_exec('tput cols') : 78;
+        $maxLineSize = ctype_digit(trim(shell_exec('tput cols 2>&1'))) ? (int) shell_exec('tput cols') : 78;
       }
       else
       {

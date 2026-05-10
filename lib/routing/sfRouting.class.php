@@ -2,6 +2,7 @@
 
 /*
  * This file is part of the symfony package.
+ * (c) 2004-2026 7x <info@se7enx.com>
  * (c) 2004-2006 Fabien Potencier <fabien.potencier@symfony-project.com>
  *
  * For the full copyright and license information, please view the LICENSE
@@ -18,8 +19,7 @@
  */
 abstract class sfRouting
 {
-  protected
-    $dispatcher        = null,
+  protected $dispatcher        = null,
     $cache             = null,
     $defaultParameters = array(),
     $options           = array();
@@ -29,7 +29,7 @@ abstract class sfRouting
    *
    * @see initialize()
    */
-  public function __construct(sfEventDispatcher $dispatcher, sfCache $cache = null, $options = array())
+  public function __construct(sfEventDispatcher $dispatcher, ?sfCache $cache = null, $options = array())
   {
     $this->initialize($dispatcher, $cache, $options);
 
@@ -64,11 +64,11 @@ abstract class sfRouting
    * @param sfCache           $cache       An sfCache instance
    * @param array             $options     An associative array of initialization options.
    */
-  public function initialize(sfEventDispatcher $dispatcher, sfCache $cache = null, $options = array())
+  public function initialize(sfEventDispatcher $dispatcher, ?sfCache $cache = null, $options = array())
   {
     $this->dispatcher = $dispatcher;
 
-    $options['debug'] = isset($options['debug']) ? (boolean) $options['debug'] : false;
+    $options['debug'] = isset($options['debug']) ? (bool) $options['debug'] : false;
 
     // disable caching when in debug mode
     $this->cache = $options['debug'] ? null : $cache;

@@ -2,6 +2,7 @@
 
 /*
  * This file is part of the symfony package.
+ * (c) 2004-2026 7x <info@se7enx.com>
  * (c) 2004-2006 Fabien Potencier <fabien.potencier@symfony-project.com>
  *
  * For the full copyright and license information, please view the LICENSE
@@ -434,7 +435,7 @@ class sfDomCssSelector implements Countable, Iterator
           }
           break;
         case 'nth-child':
-          if ($nodes[$i] === $this->nth($nodes[$i]->parentNode->firstChild, (integer) $selector['parameter']))
+          if ($nodes[$i] === $this->nth($nodes[$i]->parentNode->firstChild, (int) $selector['parameter']))
           {
             $matchingNodes[] = $nodes[$i];
           }
@@ -452,13 +453,13 @@ class sfDomCssSelector implements Countable, Iterator
           }
           break;
         case 'lt':
-          if ($i < (integer) $selector['parameter'])
+          if ($i < (int) $selector['parameter'])
           {
             $matchingNodes[] = $nodes[$i];
           }
           break;
         case 'gt':
-          if ($i > (integer) $selector['parameter'])
+          if ($i > (int) $selector['parameter'])
           {
             $matchingNodes[] = $nodes[$i];
           }
@@ -477,7 +478,7 @@ class sfDomCssSelector implements Countable, Iterator
           break;
         case 'nth':
         case 'eq':
-          if ($i == (integer) $selector['parameter'])
+          if ($i == (int) $selector['parameter'])
           {
             $matchingNodes[] = $nodes[$i];
           }
