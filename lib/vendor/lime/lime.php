@@ -2,6 +2,7 @@
 
 /**
  * This file is part of the symfony package.
+ * (c) 2004-2026 7x <info@se7enx.com>
  * (c) 2004-2006 Fabien Potencier <fabien.potencier@gmail.com>
  *
  * For the full copyright and license information, please view the LICENSE
@@ -170,7 +171,7 @@ class lime_test
   {
     $this->update_stats();
 
-    if ($result = (boolean) $exp)
+    if ($result = (bool) $exp)
     {
       $this->results['stats']['passed'][] = $this->test_nb;
     }
@@ -547,7 +548,7 @@ class lime_test
     return array($traces[$last]['file'], $traces[$last]['line']);
   }
 
-  public function handle_error($code, $message, $file, $line, $context)
+  public function handle_error($code, $message, $file, $line, $context = [])
   {
     if (!$this->options['error_reporting'] || ($code & error_reporting()) == 0)
     {
@@ -570,7 +571,7 @@ class lime_test
     $this->error($type.': '.$message, $file, $line, $trace);
   }
 
-  public function handle_exception(Exception $exception)
+  public function handle_exception(\Throwable $exception)
   {
     $this->error(get_class($exception).': '.$exception->getMessage(), $exception->getFile(), $exception->getLine(), $exception->getTrace());
 
@@ -684,10 +685,11 @@ class lime_output
   {
     if ($colorize)
     {
-      $message = preg_replace('/(?:^|\.)((?:not ok|dubious|errors) *\d*)\b/e', '$this->colorizer->colorize(\'$1\', \'ERROR\')', $message);
-      $message = preg_replace('/(?:^|\.)(ok *\d*)\b/e', '$this->colorizer->colorize(\'$1\', \'INFO\')', $message);
-      $message = preg_replace('/"(.+?)"/e', '$this->colorizer->colorize(\'$1\', \'PARAMETER\')', $message);
-      $message = preg_replace('/(\->|\:\:)?([a-zA-Z0-9_]+?)\(\)/e', '$this->colorizer->colorize(\'$1$2()\', \'PARAMETER\')', $message);
+      $colorizer = $this->colorizer;
+      $message = preg_replace_callback('/(?:^|\.)((?:not ok|dubious|errors) *\d*)\b/', function($m) use ($colorizer) { return $colorizer->colorize($m[1], 'ERROR'); }, $message);
+      $message = preg_replace_callback('/(?:^|\.)(ok *\d*)\b/', function($m) use ($colorizer) { return $colorizer->colorize($m[1], 'INFO'); }, $message);
+      $message = preg_replace_callback('/"(.+?)"/', function($m) use ($colorizer) { return $colorizer->colorize($m[1], 'PARAMETER'); }, $message);
+      $message = preg_replace_callback('/(\->|\:\:)?([a-zA-Z0-9_]+?)\(\)/', function($m) use ($colorizer) { return $colorizer->colorize($m[1].$m[2].'()', 'PARAMETER'); }, $message);
     }
 
     echo ($colorizer_parameter ? $this->colorizer->colorize($message, $colorizer_parameter) : $message)."\n";

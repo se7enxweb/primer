@@ -2,6 +2,7 @@
 
 /*
  * This file is part of the symfony package.
+ * (c) 2004-2026 7x <info@se7enx.com>
  * (c) 2004-2006 Fabien Potencier <fabien.potencier@symfony-project.com>
  * 
  * For the full copyright and license information, please view the LICENSE
@@ -18,8 +19,7 @@
  */
 abstract class sfCommandApplication
 {
-  protected
-    $commandManager = null,
+  protected $commandManager = null,
     $trace          = false,
     $verbose        = true,
     $nowrite        = false,
@@ -38,7 +38,7 @@ abstract class sfCommandApplication
    * @param sfFormatter       $formatter    A sfFormatter instance
    * @param array             $options      An array of options
    */
-  public function __construct(sfEventDispatcher $dispatcher, sfFormatter $formatter = null, $options = array())
+  public function __construct(sfEventDispatcher $dispatcher, ?sfFormatter $formatter = null, $options = array())
   {
     $this->dispatcher = $dispatcher;
     $this->formatter = null === $formatter ? $this->guessBestFormatter(STDOUT) : $formatter;
@@ -564,7 +564,7 @@ abstract class sfCommandApplication
     }
 
     // close the streams on script termination
-    register_shutdown_function(create_function('', 'fclose(STDIN); fclose(STDOUT); fclose(STDERR); return true;'));
+    register_shutdown_function(function() { fclose(STDIN); fclose(STDOUT); fclose(STDERR); return true; });
   }
 
   /**

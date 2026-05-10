@@ -2,6 +2,7 @@
 
 /*
  * This file is part of the symfony package.
+ * (c) 2004-2026 7x <info@se7enx.com>
  * (c) 2004-2006 Fabien Potencier <fabien.potencier@symfony-project.com>
  * 
  * For the full copyright and license information, please view the LICENSE
@@ -33,7 +34,7 @@ class sfCommandManager
    * @param sfCommandArgumentSet $argumentSet A sfCommandArgumentSet object
    * @param sfCommandOptionSet   $optionSet   A setOptionSet object
    */
-  public function __construct(sfCommandArgumentSet $argumentSet = null, sfCommandOptionSet $optionSet = null)
+  public function __construct(?sfCommandArgumentSet $argumentSet = null, ?sfCommandOptionSet $optionSet = null)
   {
     if (null === $argumentSet)
     {
@@ -108,7 +109,7 @@ class sfCommandManager
     else if (!is_array($arguments))
     {
       // hack to split arguments with spaces : --test="with some spaces"
-      $arguments = preg_replace('/(\'|")(.+?)\\1/e', "str_replace(' ', '=PLACEHOLDER=', '\\2')", $arguments);
+      $arguments = preg_replace_callback('/(\'|")(.*?)\1/', function($m) { return str_replace(' ', '=PLACEHOLDER=', $m[2]); }, $arguments);
       $arguments = preg_split('/\s+/', $arguments);
       $arguments = str_replace('=PLACEHOLDER=', ' ', $arguments);
     }

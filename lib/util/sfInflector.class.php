@@ -2,6 +2,7 @@
 
 /*
  * This file is part of the symfony package.
+ * (c) 2004-2026 7x <info@se7enx.com>
  * (c) 2004-2006 Fabien Potencier <fabien.potencier@symfony-project.com>
  *
  * For the full copyright and license information, please view the LICENSE
@@ -28,8 +29,8 @@ class sfInflector
   public static function camelize($lower_case_and_underscored_word)
   {
     $tmp = $lower_case_and_underscored_word;
-    $tmp = sfToolkit::pregtr($tmp, array('#/(.?)#e'    => "'::'.strtoupper('\\1')",
-                                         '/(^|_|-)+(.)/e' => "strtoupper('\\2')"));
+    $tmp = preg_replace_callback('#/(.?)#', function($m) { return '::'.strtoupper($m[1]); }, $tmp);
+    $tmp = preg_replace_callback('/(^|_|-)+(.)/u', function($m) { return strtoupper($m[2]); }, $tmp);
 
     return $tmp;
   }

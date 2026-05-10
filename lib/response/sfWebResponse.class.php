@@ -2,6 +2,7 @@
 
 /*
  * This file is part of the symfony package.
+ * (c) 2004-2026 7x <info@se7enx.com>
  * (c) 2004-2006 Fabien Potencier <fabien.potencier@symfony-project.com>
  *
  * For the full copyright and license information, please view the LICENSE
@@ -135,7 +136,7 @@ class sfWebResponse extends sfResponse
    */
   public function setHeaderOnly($value = true)
   {
-    $this->headerOnly = (boolean) $value;
+    $this->headerOnly = (bool) $value;
   }
 
   /**
@@ -406,7 +407,7 @@ class sfWebResponse extends sfResponse
    */
   protected function normalizeHeaderName($name)
   {
-    return preg_replace('/\-(.)/e', "'-'.strtoupper('\\1')", strtr(ucfirst(strtolower($name)), '_', '-'));
+    return preg_replace_callback('/\-(.)/s', function($m) { return '-'.strtoupper($m[1]); }, strtr(ucfirst(strtolower($name)), '_', '-'));
   }
 
   /**

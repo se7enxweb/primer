@@ -2,6 +2,7 @@
 
 /*
  * This file is part of the symfony package.
+ * (c) 2004-2026 7x <info@se7enx.com>
  * (c) Fabien Potencier <fabien.potencier@symfony-project.com>
  *
  * For the full copyright and license information, please view the LICENSE
@@ -278,6 +279,7 @@ abstract class sfFormObject extends BaseForm
 
   protected function camelize($text)
   {
-    return preg_replace(array('#/(.?)#e', '/(^|_|-)+(.)/e'), array("'::'.strtoupper('\\1')", "strtoupper('\\2')"), $text);
+    $text = preg_replace_callback('#/(.?)#s', function($m) { return '::'.strtoupper($m[1]); }, $text);
+    return preg_replace_callback('/(^|_|-)+(.)/s', function($m) { return strtoupper($m[2]); }, $text);
   }
 }

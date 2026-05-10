@@ -2,6 +2,7 @@
 
 /*
  * This file is part of the symfony package.
+ * (c) 2004-2026 7x <info@se7enx.com>
  * (c) Fabien Potencier <fabien.potencier@symfony-project.com>
  * 
  * For the full copyright and license information, please view the LICENSE
@@ -72,7 +73,7 @@ EOF;
     {
       $this->logBlock(array_merge(
         array('Permissions on the following file(s) could not be fixed:', ''),
-        array_map(create_function('$f', 'return \' - \'.sfDebug::shortenFilePath($f);'), $this->failed)
+        array_map(function($f) { return ' - '.sfDebug::shortenFilePath($f); }, $this->failed)
       ), 'ERROR_LARGE');
     }
   }

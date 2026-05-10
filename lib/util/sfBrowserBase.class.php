@@ -2,6 +2,7 @@
 
 /*
  * This file is part of the symfony package.
+ * (c) 2004-2026 7x <info@se7enx.com>
  * (c) Fabien Potencier <fabien.potencier@symfony-project.com>
  *
  * For the full copyright and license information, please view the LICENSE
@@ -502,7 +503,7 @@ abstract class sfBrowserBase
    *
    * @param Exception $exception An Exception instance
    */
-  public function setCurrentException(Exception $exception)
+  public function setCurrentException(\Throwable $exception)
   {
     $this->currentException = $exception;
   }
@@ -925,7 +926,7 @@ abstract class sfBrowserBase
     if (false !== $pos = strpos($name, '['))
     {
       $var = &$vars;
-      $tmps = array_filter(preg_split('/(\[ | \[\] | \])/x', $name), create_function('$s', 'return $s !== "";'));
+      $tmps = array_filter(preg_split('/(\[ | \[\] | \])/x', $name), function($s) { return $s !== ''; });
       foreach ($tmps as $tmp)
       {
         $var = &$var[$tmp];

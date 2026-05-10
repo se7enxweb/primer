@@ -2,6 +2,7 @@
 
 /*
  * This file is part of SwiftMailer.
+ * (c) 2004-2026 7x <info@se7enx.com>
  * (c) 2004-2009 Chris Corbyn
  *
  * For the full copyright and license information, please view the LICENSE
@@ -438,7 +439,7 @@ abstract class Swift_Transport_AbstractSmtpTransport
         $line = $this->_buffer->readLine($seq);
         $response .= $line;
       }
-      while (null !== $line && false !== $line && ' ' != $line{3});
+      while (null !== $line && false !== $line && ' ' != $line[3]);
     }
     catch (Swift_TransportException $e)
     {
