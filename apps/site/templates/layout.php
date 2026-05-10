@@ -100,7 +100,7 @@
 <body>
 
   <header class="sf-header">
-    <span class="sf-header-logo">7x Sym<em>fony</em></span>
+    <span class="sf-header-logo">7x Symfony<em>One</em></span>
     <span class="sf-header-pill">1.5-dev &bull; PHP 8.5.x Compatible</span>
     <span class="sf-header-env"><?php echo htmlspecialchars($sf_app ?? '') ?>/<?php echo htmlspecialchars($sf_env ?? '') ?></span>
   </header>

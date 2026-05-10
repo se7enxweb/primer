@@ -1,10 +1,275 @@
-# 7x Symfony Framework v1.5 — PHP 8.5 Support Release
+# 7x Symfony Framework v1.5 — Release Notes
+
+---
+
+## v1.5.0.2 — Security Hardening + Public Directory Web Root
+
+**Release:** `v1.5.0.2`  
+**Branch:** `1.5`  
+**Date:** 2026-05-10  
+**Maintainer:** [7x](https://se7enx.com) — [info@se7enx.com](mailto:info@se7enx.com)  
+**Repository:** https://github.com/se7enxweb/symfony1
+
+---
+
+### Summary
+
+This release delivers **four targeted security fixes** to the framework core and a **structural change
+to the web root layout** that eliminates an entire class of information-disclosure risks. All changes
+are backward-compatible with existing v1.5.0.x application code.
+
+---
+
+### Security Fixes
+
+#### 1. YAML PHP Object Injection — `!!php/object:` tag disabled (Critical — RCE)
+
+**File:** `lib/yaml/sfYamlInline.php`  
+**CWE:** CWE-502 Deserialization of Untrusted Data  
+**Severity:** Critical
+
+**What the vulnerability was:**  
+The YAML parser honoured the `!!php/object:` tag, which called `unserialize()` on the base64-encoded
+payload embedded in the YAML value. If any YAML processed by the application was sourced from
+user input, a file upload, a remote API, or any other untrusted source, an attacker could craft a
+payload that exploits a PHP "gadget chain" — a sequence of existing classes whose `__wakeup()` or
+`__destruct()` methods chain together to achieve arbitrary code execution.
+
+This is the same vector exploited in **CVE-2024-28859** (symfony1 via Swift Mailer gadget chain) and
+is one of the most frequently weaponised PHP vulnerabilities of the past decade. The OWASP Top 10
+(A08:2021 – Software and Data Integrity Failures) specifically calls out insecure deserialization.
+
+**Why it matters:**  
+Gadget-chain exploits require no zero-day. Attackers use public tool sets (e.g. phpggc) to generate
+payloads from well-known classes already present in the application's vendor tree. A symfony1
+application with Swift Mailer (bundled), Doctrine 1.x, or Propel 1.x in its autoload path is
+exploitable without any custom code — the gadget classes ship with the framework itself.
+
+**The fix:**  
+The `!!php/object:` case now throws `InvalidArgumentException` unconditionally. PHP object
+deserialization from YAML is disabled. Applications that genuinely need to round-trip PHP objects
+through YAML must do so explicitly via application-level serialisation under their own controlled
+schema, not via a general-purpose YAML tag.
+
+```php
+// BEFORE — executes unserialize() on attacker-controlled data
+case 0 === strpos($scalar, '!!php/object:'):
+    return unserialize(substr($scalar, 13));
+
+// AFTER — blocked
+case 0 === strpos($scalar, '!!php/object:'):
+    throw new InvalidArgumentException(
+        'The !!php/object YAML tag is not allowed for security reasons.'
+    );
+```
+
+---
+
+#### 2. CSRF Token Timing Attack — Constant-Time Comparison (High)
+
+**File:** `lib/validator/sfValidatorCSRFToken.class.php`  
+**CWE:** CWE-208 Observable Timing Discrepancy  
+**Severity:** High
+
+**What the vulnerability was:**  
+The CSRF token validator compared the submitted token against the expected value using PHP's `!=`
+operator, which performs a short-circuit string comparison — it stops as soon as it finds the first
+byte that differs. The time taken therefore leaks information about how many leading bytes of the
+submitted token match the real token. A sufficiently fast and persistent attacker can exploit this
+timing difference to brute-force a CSRF token one character at a time, reducing the search space
+from $O(n^{256})$ to $O(n \times 256)$.
+
+**Why it matters:**  
+CSRF tokens are the primary defence against Cross-Site Request Forgery attacks (OWASP A01:2021 —
+Broken Access Control). A defeated CSRF token means an attacker can trick an authenticated user's
+browser into performing any state-changing action — transferring money, changing an email address,
+deleting records — simply by getting them to visit a malicious page.
+
+**The fix:**  
+Replaced `!=` with PHP's `hash_equals()`, which was specifically added in PHP 5.6.0 to perform
+constant-time string comparison regardless of where differences occur.
+
+```php
+// BEFORE — timing-leaky
+if ($value != $this->getOption('token')) { ... }
+
+// AFTER — constant-time
+if (!hash_equals((string) $this->getOption('token'), (string) $value)) { ... }
+```
+
+---
+
+#### 3. Weak CSRF Token Generation — MD5 → HMAC-SHA256 (Medium)
+
+**File:** `lib/form/sfForm.class.php`  
+**CWE:** CWE-326 Inadequate Encryption Strength  
+**Severity:** Medium
+
+**What the vulnerability was:**  
+CSRF tokens were generated with `md5($secret . session_id() . get_class($form))`. MD5 is a
+cryptographically broken hash function — it is preimage-vulnerable and trivially reversible via
+rainbow tables. More critically, the construction used **concatenation** rather than an HMAC, making
+it vulnerable to length-extension attacks. An attacker who knows or can guess the session ID and form
+class name can forge a valid token if they obtain any MD5 output derived from the same secret.
+
+**Why it matters:**  
+CSRF token strength is only as good as the algorithm generating it. A forged CSRF token grants
+the same rights as a legitimately obtained one — combined with the timing vulnerability above, a
+weak token makes CSRF protection effectively decorative.
+
+**The fix:**  
+Replaced `md5()` with `hash_hmac('sha256', ...)`, using the secret as the HMAC key. HMAC-SHA256:
+- Is not vulnerable to length-extension attacks (unlike raw concatenation with MD5/SHA1/SHA256)
+- Produces 256 bits of output vs MD5's 128 bits
+- Uses the secret properly as a cryptographic key rather than a simple prefix
+
+```php
+// BEFORE — MD5 concatenation (weak)
+return md5($secret . session_id() . get_class($this));
+
+// AFTER — HMAC-SHA256 (strong)
+return hash_hmac('sha256', session_id() . get_class($this), $secret);
+```
+
+---
+
+#### 4. `eval()` Injection via sfChoiceFormat Set Notation — Input Allowlist (Medium)
+
+**File:** `lib/i18n/sfChoiceFormat.class.php`  
+**CWE:** CWE-94 Improper Control of Generation of Code ('Code Injection')  
+**Severity:** Medium
+
+**What the vulnerability was:**  
+The `{n: expr}` set notation in i18n plural/choice strings allowed arbitrary PHP expressions to be
+passed to `eval()` without any character-level validation. The `$set` value from the YAML translation
+catalogue was substituted directly as the `eval`'d expression after replacing the token `n` with
+`$number`. An attacker who controls translation catalogue content (e.g. via an admin interface, a
+writable YAML file, or a YAML injection in a higher-level parser) could inject arbitrary PHP code.
+
+**Why it matters:**  
+`eval()` in a web-accessible code path is a direct remote code execution vector. Even when
+translation catalogues are not directly user-editable, defence-in-depth requires that `eval()` be
+guarded against malicious input at the point of consumption, not only at the point of ingestion.
+
+**The fix:**  
+Added a strict allowlist regular expression that only permits digits, the placeholder variable `n`,
+whitespace, and arithmetic/comparison/logical operators. Any `$set` expression containing unexpected
+characters (quotes, function names, semicolons, dollar signs, etc.) is rejected and returns `false`.
+
+```php
+// BEFORE — raw eval without validation
+$str = '$result = ' . str_replace('n', '$number', $set) . ';';
+eval($str);
+
+// AFTER — allowlist before eval
+if (!preg_match('/^[0-9n\s\+\-\*\/\%\<\>\=\!\&\|\(\)\.]+$/i', $set)) {
+    return false;
+}
+$str = '$result = ' . str_replace('n', '$number', $set) . ';';
+eval($str);
+```
+
+---
+
+### Web Root Structural Change — `public/` Directory
+
+**Files moved:** `index.php` → `public/index.php`, `.htaccess` → `public/.htaccess`  
+**Documentation updated:** `README.md`, `INSTALL.md`
+
+**What changed:**  
+The front controller (`index.php`) and Apache rewrite rules (`.htaccess`) have been moved from
+the project root into a dedicated `public/` subdirectory. The web server `DocumentRoot` (Apache)
+or `root` (Nginx) should now point to `public/` rather than the project root.
+
+**Why this matters:**  
+When `DocumentRoot` was the project root, every file in the repository was potentially reachable
+over HTTP — subject only to web server configuration. This included:
+
+- `composer.json` — reveals all installed dependencies and their versions, enabling targeted CVE research
+- `composer.lock` — reveals exact dependency versions, narrowing CVE search further
+- `lib/` — framework source code readable directly
+- `apps/` — application configuration, routing rules, and templates
+- `vendor/` — third-party packages potentially containing their own vulnerabilities
+- `.git/` — if misconfigured, the entire source repository history
+
+The `public/` layout is the **standard pattern** used by Symfony 2+, Laravel, Laminas, Slim, and
+every other modern PHP framework. By setting `DocumentRoot` to `public/`, none of the above are
+reachable by HTTP even if the web server's access controls are misconfigured. The directory boundary
+is enforced by the file system, not by configuration.
+
+**How to update your virtual host:**
+
+Apache:
+```apacheconf
+# Before
+DocumentRoot /var/www/myapp
+
+# After — point to public/
+DocumentRoot /var/www/myapp/public
+```
+
+Nginx:
+```nginx
+# Before
+root /var/www/myapp;
+
+# After — point to public/
+root /var/www/myapp/public;
+```
+
+See [INSTALL.md](INSTALL.md) for complete virtual host examples.
+
+---
+
+### Files Changed in v1.5.0.2
+
+| File | Change |
+|------|--------|
+| `lib/yaml/sfYamlInline.php` | Block `!!php/object:` deserialization |
+| `lib/validator/sfValidatorCSRFToken.class.php` | Use `hash_equals()` for CSRF validation |
+| `lib/form/sfForm.class.php` | Upgrade CSRF token to HMAC-SHA256 |
+| `lib/i18n/sfChoiceFormat.class.php` | Allowlist guard before `eval()` in set notation |
+| `index.php` → `public/index.php` | Move front controller to `public/` directory |
+| `.htaccess` → `public/.htaccess` | Move rewrite rules to `public/` directory |
+| `README.md` | Update DocumentRoot instructions and directory layout |
+| `INSTALL.md` | Update vhost examples, step-by-step guide, troubleshooting |
+
+---
+
+### Upgrade Notes
+
+**Application code:** No changes required. The security fixes are internal to the framework's
+validator, form, YAML, and i18n subsystems.
+
+**Web server configuration:** Update `DocumentRoot` / `root` from the project root to `public/`.
+This is the only operator action required.
+
+**Existing `index.php` in project root:** If you have a copy of `index.php` at the project root
+from a prior deployment, it should be removed. Only `public/index.php` is the authoritative
+front controller in v1.5.0.2.
+
+---
+
+## v1.5.0.1 — Documentation & Staging Cleanup
+
+**Release:** `v1.5.0.1`  
+**Date:** 2026-05-09
+
+- Removed private staging site references from public documentation
+- Added README.md and INSTALL.md in 7x standard format with full installation, routing,
+  action, template, database, Composer, test suite, and deployment sections
+
+---
+
+## v1.5.0.0 — PHP 8.5 Support Release
 
 **Release:** `v1.5.0.0`  
 **Branch:** `1.5`  
 **Date:** 2026-05-09  
 **Maintainer:** [7x](https://se7enx.com) — [info@se7enx.com](mailto:info@se7enx.com)  
 **Repository:** https://github.com/se7enxweb/symfony1
+
+---
 
 ---
 

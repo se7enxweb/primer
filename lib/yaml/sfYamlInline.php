@@ -398,7 +398,7 @@ class sfYamlInline
       case 0 === strpos($scalar, '! '):
         return intval(self::parseScalar(substr($scalar, 2)));
       case 0 === strpos($scalar, '!!php/object:'):
-        return unserialize(substr($scalar, 13));
+        throw new InvalidArgumentException('The !!php/object YAML tag is not allowed for security reasons. PHP object deserialization from YAML is disabled.');
       case ctype_digit($scalar):
         $raw = $scalar;
         $cast = intval($scalar);

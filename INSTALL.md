@@ -25,7 +25,7 @@
 15. [Forms and Validation](#15-forms-and-validation)
 16. [Running the Lime Test Suite](#16-running-the-lime-test-suite)
 17. [Writing Your Own Tests](#17-writing-your-own-tests)
-18. [symfony1 CLI Tasks](#18-symfony1-cli-tasks)
+18. [symfonyone CLI Tasks](#18-symfonyone-cli-tasks)
 19. [Cache Management](#19-cache-management)
 20. [Deployment Checklist](#20-deployment-checklist)
 21. [Troubleshooting](#21-troubleshooting)
@@ -90,7 +90,7 @@ project-root/
 │       └── templates/
 │           ├── layout.php           Global HTML decorator
 │           └── error404.php         404 fallback
-├── lib/                             symfony1 core library (sfCoreAutoload scans this)
+├── lib/                             symfonyone core library (sfCoreAutoload scans this)
 │   ├── autoload/sfCoreAutoload.class.php
 │   ├── cache/                       Cache backends (sfFileCache, sfAPCCache, …)
 │   ├── config/                      Configuration handlers
@@ -111,20 +111,23 @@ project-root/
 │   ├── bin/prove.php                Test runner
 │   ├── unit/                        Unit test files (*Test.php)
 │   └── functional/                  Functional test fixtures
+├── public/                          ← Web server DocumentRoot (only publicly served directory)
+│   ├── index.php                    Web front controller — single entry point for all requests
+│   ├── .htaccess                    Apache rewrite rules (mod_rewrite → index.php)
+│   ├── favicon.ico
+│   └── favicon.png
 ├── src/                             Your PSR-4 namespaced code (optional, Composer)
-├── vendor/                          Composer packages (git-ignored)
+├── vendor/                          Composer packages (git-ignored, above web root)
 ├── composer.json                    Composer manifest
-├── composer.lock                    Lock file (git-ignored in this repo)
-├── index.php                        Web front controller
-└── .htaccess                        Apache rewrite configuration
+└── composer.lock                    Lock file (git-ignored in this repo)
 ```
 
 ### Request Lifecycle
 
 ```
 1.  Browser sends GET /articles/hello-world
-2.  Apache/Nginx rewrites all requests → index.php
-3.  index.php boots sfCoreAutoload (+ vendor/autoload.php if present)
+2.  Apache/Nginx rewrites all requests → public/index.php
+3.  public/index.php boots sfCoreAutoload (+ vendor/autoload.php if present)
 4.  sfMicroDispatcher creates sfPatternRouting, loads routing.php
 5.  sfPatternRouting matches /articles/hello-world → module=article, action=show
 6.  sfInflector::camelize('article') → 'Article' → loads articleActions class
@@ -141,7 +144,7 @@ project-root/
 ### Step 1 — Clone the Repository
 
 ```bash
-git clone -b 1.5 https://github.com/se7enxweb/symfony1.git my-project
+git clone -b 1.5 https://github.com/se7enxweb/symfonyone.git my-project
 cd my-project
 ```
 
@@ -162,7 +165,9 @@ composer install
 ### Step 4 — Set Up Web Server
 
 See [Section 5 — Web Server Configuration](#5-web-server-configuration) for Apache and Nginx examples.
-Point your `DocumentRoot` at the project root (where `index.php` lives).
+Point your `DocumentRoot` at the **`public/`** subdirectory — not the project root. This is the
+key security boundary: `lib/`, `apps/`, `vendor/`, `composer.json`, and all framework internals
+live above the web root and are never directly accessible over HTTP.
 
 ### Step 5 — Set File Permissions
 
@@ -175,7 +180,11 @@ chmod -R 777 apps/site/cache apps/site/log
 ### Step 6 — Verify the Installation
 
 Navigate to your domain or `http://localhost/`. You should be redirected to `/version` where a
-green status dashboard confirms all symfony1 core classes load correctly.
+green status dashboard confirms all symfonyone core classes load correctly.
+
+> **Verify your DocumentRoot is correct:** only `public/index.php` and `public/.htaccess` should
+> be reachable over HTTP. Accessing `http://yourapp/composer.json` should return 403 or 404 —
+> never a download.
 
 ```bash
 curl -s http://localhost/version | grep -i "all systems"
@@ -194,11 +203,11 @@ git log --oneline -3
 
 ### How It Works in v1.5
 
-`index.php` boots symfony1's own `sfCoreAutoload` first, then optionally requires
+`public/index.php` boots symfonyone's own `sfCoreAutoload` first, then optionally requires
 `vendor/autoload.php` if it exists. PHP's `spl_autoload` stack means both coexist cleanly:
 
 ```php
-// index.php (simplified)
+// public/index.php (simplified)
 require_once SF_ROOT_DIR.'/lib/autoload/sfCoreAutoload.class.php';
 sfCoreAutoload::register();
 
@@ -241,12 +250,17 @@ and `composer.lock`. Collaborators run `composer install` after cloning.
 
 ### Apache 2.4 — Virtual Host
 
+Set `DocumentRoot` to the **`public/`** subdirectory. This keeps `lib/`, `apps/`, `vendor/`,
+`composer.json`, and all framework internals off the public web.
+
 ```apacheconf
 <VirtualHost *:80>
     ServerName myapp.example.com
-    DocumentRoot /var/www/myapp
 
-    <Directory /var/www/myapp>
+    # Point DocumentRoot at public/ — the only directory served over HTTP
+    DocumentRoot /var/www/myapp/public
+
+    <Directory /var/www/myapp/public>
         Options -Indexes +FollowSymLinks
         AllowOverride All
         Require all granted
@@ -257,14 +271,14 @@ and `composer.lock`. Collaborators run `composer install` after cloning.
 </VirtualHost>
 ```
 
-The repository's `.htaccess` file handles rewriting. Ensure `mod_rewrite` is enabled:
+The `public/.htaccess` file handles rewriting. Ensure `mod_rewrite` is enabled:
 
 ```bash
 a2enmod rewrite
 systemctl reload apache2
 ```
 
-`.htaccess` rewrite rules (already in the repository root):
+`public/.htaccess` rewrite rules (included in the repository):
 
 ```apacheconf
 DirectoryIndex index.php
@@ -279,11 +293,15 @@ DirectoryIndex index.php
 
 ### Nginx — Server Block
 
+Set `root` to the **`public/`** subdirectory.
+
 ```nginx
 server {
     listen 80;
     server_name myapp.example.com;
-    root /var/www/myapp;
+
+    # Root must point to public/ — not the project root
+    root /var/www/myapp/public;
     index index.php;
 
     location / {
@@ -297,6 +315,7 @@ server {
         include        fastcgi_params;
     }
 
+    # Deny access to hidden files (.git, .env, etc.)
     location ~ /\. {
         deny all;
     }
@@ -313,7 +332,7 @@ nginx -t && systemctl reload nginx
 
 ## 6. File Permissions
 
-symfony1 writes to cache and log directories. Set them writable by the web server user:
+symfonyone writes to cache and log directories. Set them writable by the web server user:
 
 ```bash
 # Create directories if they do not exist
@@ -978,7 +997,7 @@ public function executeFetch(): string
 
 ## 15. Forms and Validation
 
-symfony1 ships a full form and validator system under `lib/form/` and `lib/validator/`.
+symfonyone ships a full form and validator system under `lib/form/` and `lib/validator/`.
 
 ### Define a Form Class
 
@@ -1112,7 +1131,7 @@ php test/unit/lib/ArticleTest.php
 
 ---
 
-## 18. symfony1 CLI Tasks
+## 18. symfonyone CLI Tasks
 
 The task system is accessed via `php symfony` from the project root.
 
@@ -1157,7 +1176,7 @@ composer show                                   # list installed packages
 
 ## 19. Cache Management
 
-### Clear the symfony1 Cache
+### Clear the symfonyone Cache
 
 ```bash
 php symfony cc
@@ -1198,7 +1217,7 @@ php -l lib/routing/sfRoute.class.php
 ### Post-Deployment
 
 ```bash
-# 5. Clear the symfony1 cache
+# 5. Clear the symfonyone cache
 php symfony cc
 
 # 6. Set correct file permissions
@@ -1212,12 +1231,17 @@ curl -Is http://yoursite.com/ | head -5
 
 curl -Is http://yoursite.com/version | head -5
 # HTTP/1.1 200 OK
+
+# 8. Verify the project root is NOT publicly accessible
+curl -Is http://yoursite.com/../composer.json | head -3
+# Should be 403 Forbidden or 404 — never a 200 OK
 ```
 
 ### Security Hardening
 
-- Ensure `vendor/` is not publicly accessible (place above DocumentRoot or deny in web server config)
-- Set `SF_DEBUG` to `false` in `index.php` for production
+- The `DocumentRoot` is `public/` — `vendor/`, `lib/`, `apps/`, `composer.json`, and `.env` files
+  live above the web root and are unreachable over HTTP by design
+- Set `SF_DEBUG` to `false` in `public/index.php` for production
 - Use HTTPS — configure TLS in Apache/Nginx and redirect HTTP to HTTPS
 - Review database credentials — use environment variables, not hardcoded values
 - Run `composer audit` to check installed packages for known CVEs
@@ -1233,14 +1257,16 @@ tail -f /var/log/apache2/error.log
 # or
 tail -f /var/log/nginx/error.log
 ```
-Enable display errors temporarily in `index.php` (`ini_set('display_errors', 1)`), reproduce the error,
+Enable display errors temporarily in `public/index.php` (`ini_set('display_errors', 1)`), reproduce the error,
 then remove the setting.
 
 ---
 
 **Q: Routes are not matching — I always get 404.**
-A: Verify `mod_rewrite` is enabled (`a2enmod rewrite`) and `AllowOverride All` is set in your Apache
-vhost. For Nginx, confirm the `try_files` directive includes `/index.php?$query_string`.
+A: Verify `mod_rewrite` is enabled (`a2enmod rewrite`) and `AllowOverride All` is set for your Apache
+`DocumentRoot` (`/var/www/myapp/public`). For Nginx, confirm the `try_files` directive includes
+`/index.php?$query_string`. Ensure your `DocumentRoot` / `root` points to `public/`, not the
+project root — the `.htaccess` that drives rewriting lives in `public/.htaccess`.
 
 ---
 
@@ -1260,12 +1286,12 @@ installed packages.
 **Q: Tests fail with PHP 8.x type errors.**
 A: You may be running a version of a test file that was not updated to the PHP 8.x baseline. Check
 the `1.5` branch for the latest test files. Report regressions at:
-[github.com/se7enxweb/symfony1/issues](https://github.com/se7enxweb/symfony1/issues)
+[github.com/se7enxweb/symfonyone/issues](https://github.com/se7enxweb/symfonyone/issues)
 
 ---
 
 **Q: `preg_replace()` deprecated /e modifier warning.**
-A: All `/e` modifier usage has been removed from the symfony1 core in v1.5. If you see this warning it
+A: All `/e` modifier usage has been removed from the symfonyone core in v1.5. If you see this warning it
 is in custom code or a third-party plugin. Replace with `preg_replace_callback()`.
 
 ---

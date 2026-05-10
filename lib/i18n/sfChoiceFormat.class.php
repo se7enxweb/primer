@@ -165,6 +165,11 @@ class sfChoiceFormat
 
   protected function isValidSetNotation($number, $set)
   {
+    // Only allow safe characters: digits, whitespace, comparison/logical/arithmetic operators, parentheses, and the variable 'n'
+    if (!preg_match('/^[0-9n\s\+\-\*\/\%\<\>\=\!\&\|\(\)\.]+$/i', $set))
+    {
+      return false;
+    }
     $str = '$result = '.str_replace('n', '$number', $set).';';
     try
     {

@@ -35,7 +35,7 @@ class sfValidatorCSRFToken extends sfValidatorBase
    */
   protected function doClean($value)
   {
-    if ($value != $this->getOption('token'))
+    if (!hash_equals((string) $this->getOption('token'), (string) $value))
     {
       throw new sfValidatorError($this, 'csrf_attack');
     }

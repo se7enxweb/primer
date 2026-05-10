@@ -1,10 +1,10 @@
 {
-  "name": "se7enxweb/symfony1",
+  "name": "se7enxweb/symfonyone",
   "description": "7x Symfony 1.5 — PHP 8.x - 8.5.6 Support upgrade of symfony 1.4.x (branch 1.5) maintained by 7x",
   "type": "library",
   "license": "MIT",
   "keywords": ["symfony", "symfony1", "framework", "php8"],
-  "homepage": "https://github.com/se7enxweb/symfony1",
+  "homepage": "https://github.com/se7enxweb/symfonyone",
   "authors": [
     {
       "name": "7x",

@@ -1,11 +1,11 @@
-# 7x Symfony Framework v1.5 — PHP 8.5 Support (Stable; Open Source)
+# 7x SymfonyOne Framework v1.5 — PHP 8.5 Support (Stable; Open Source)
 
 [![PHP](https://img.shields.io/badge/PHP-8.0%2B-blue)](https://php.net/)
-[![symfony1](https://img.shields.io/badge/symfony-1.5-orange)](https://github.com/se7enxweb/symfony1)
+[![symfonyone](https://img.shields.io/badge/symfony-1.5-orange)](https://github.com/se7enxweb/symfonyone)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green)](LICENSE)
-[![GitHub issues](https://img.shields.io/github/issues/se7enxweb/symfony1)](https://github.com/se7enxweb/symfony1/issues)
+[![GitHub issues](https://img.shields.io/github/issues/se7enxweb/symfonyone)](https://github.com/se7enxweb/symfonyone/issues)
 
-> **7x Symfony Framework v1.5** is the continuing evolution of the original symfony 1.4 framework,
+> **7x SymfonyOne Framework v1.5** is the continuing evolution of the original symfony 1.4 framework,
 > now fully compatible with PHP 8.0 through PHP 8.5. Maintained by [7x (se7enx.com)](https://se7enx.com/)
 > and the open-source developer community that has relied on symfony1 for over two decades.
 
@@ -99,10 +99,10 @@ framework. It provides:
 HTTP Request
       │
       ▼
-   Web Server (Apache / Nginx)
+   Web Server (Apache / Nginx)  →  DocumentRoot: public/
       │
       ▼
-  index.php  ──  sfCoreAutoload + (optional) Composer vendor/autoload.php
+  public/index.php  ──  sfCoreAutoload + (optional) Composer vendor/autoload.php
       │
       ├── sfPatternRouting  →  matches URL to module/action
       │
@@ -152,12 +152,15 @@ project-root/
 │   │   ├── lime/                    Lime test framework
 │   │   └── swiftmailer/             Swift Mailer
 │   └── yaml/                        YAML parser
+├── public/                          ← Web server DocumentRoot (only publicly served dir)
+│   ├── index.php                    Web front controller — single entry point
+│   ├── .htaccess                    Apache rewrite rules
+│   ├── favicon.ico
+│   └── favicon.png
 ├── test/
 │   ├── unit/                        Unit tests (lime-based)
 │   └── functional/                  Functional tests
-├── composer.json                    Composer manifest (new in v1.5)
-├── index.php                        Web front controller
-└── .htaccess                        Apache rewrite rules
+└── composer.json                    Composer manifest (new in v1.5)
 ```
 
 ---
@@ -205,14 +208,14 @@ project-root/
 
 ```bash
 # 1. Clone the repository (branch 1.5)
-git clone -b 1.5 https://github.com/se7enxweb/symfony1.git my-project
+git clone -b 1.5 https://github.com/se7enxweb/symfonyone.git my-project
 cd my-project
 
 # 2. (Optional) Install Composer packages
 composer install
 
-# 3. Point your web server DocumentRoot to the project root
-#    and ensure index.php is the DirectoryIndex.
+# 3. Point your web server DocumentRoot to the project's public/ directory
+#    This keeps lib/, apps/, vendor/, composer.json, etc. off the web.
 #    See INSTALL.md for Apache and Nginx virtual host examples.
 
 # 4. Open in a browser
@@ -354,7 +357,7 @@ composer audit                                      # check for security advisor
 ## 13. Issue Tracker
 
 Submit bugs, feature requests, and improvements at:
-**https://github.com/se7enxweb/symfony1/issues**
+**https://github.com/se7enxweb/symfonyone/issues**
 
 If you discover a security issue, please report it responsibly by email to
 [security@se7enx.com](mailto:security@se7enx.com) rather than opening a public issue.
@@ -365,11 +368,11 @@ If you discover a security issue, please report it responsibly by email to
 
 | Resource | URL |
 |----------|-----|
-| Repository | github.com/se7enxweb/symfony1 |
+| Repository | github.com/se7enxweb/symfonyone |
 | Release Notes | RELEASE_NOTES.md |
 | Installation Guide | INSTALL.md |
-| Issue Tracker | github.com/se7enxweb/symfony1/issues |
-| Discussions | github.com/se7enxweb/symfony1/discussions |
+| Issue Tracker | github.com/se7enxweb/symfonyone/issues |
+| Discussions | github.com/se7enxweb/symfonyone/discussions |
 | 7x Corporate | se7enx.com |
 | Support | support@se7enx.com |
 | Sponsor 7x | sponsor.se7enx.com |
@@ -380,7 +383,7 @@ If you discover a security issue, please report it responsibly by email to
 
 Everyone is encouraged to contribute. To get started:
 
-1. Fork the repository: [github.com/se7enxweb/symfony1](https://github.com/se7enxweb/symfony1)
+1. Fork the repository: [github.com/se7enxweb/symfonyone](https://github.com/se7enxweb/symfonyone)
 2. Clone your fork and create a feature branch:
    ```bash
    git checkout -b feature/my-improvement
@@ -395,8 +398,8 @@ Everyone is encouraged to contribute. To get started:
 7. Participate in the code review — maintainers respond promptly
 
 Bug reports, feature requests, and discussions are welcome via the
-[issue tracker](https://github.com/se7enxweb/symfony1/issues) and
-[GitHub Discussions](https://github.com/se7enxweb/symfony1/discussions).
+[issue tracker](https://github.com/se7enxweb/symfonyone/issues) and
+[GitHub Discussions](https://github.com/se7enxweb/symfonyone/discussions).
 
 ---
 
