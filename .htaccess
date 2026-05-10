@@ -1,27 +1,7 @@
 # Static Subdirectory Virtual Host Required Options
 RewriteEngine On
-# RewriteOptions IgnoreInherit
-## DirectoryIndex index.html
-
-# edit.graham.se7enx.com https + bcrypt browser authentication 
-#AuthType Basic
-#AuthName "7x :: Restricted Content"
-#AuthUserFile /var/www/vhosts/se7enx.com/web/acl/7x.acl
-#Require valid-user
-
-# Redirect www host requests to domain
-# RewriteEngine On
-# RewriteCond %{HTTP_HOST} ^www.digg.one
-# RewriteRule (.*) https://digg.one/$1 [R=301,L]
-
-####
-
-# Copy this file to a new file called .htaccess in your eZ Publish root
-# to secure your installation by turning on .htaccess based virtual host mode.
 
 DirectoryIndex index.php
-
-#RewriteEngine On
 
 #RewriteRule ^var/([^/]+/)?storage/images(-versioned)?/.* - [L]
 #RewriteRule ^var/([^/]+/)?cache/(texttoimage|public)/.* - [L]
