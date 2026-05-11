@@ -33,6 +33,8 @@ RewriteRule ^w3c/p3p\.xml - [L]
 # Sitemap for Search Engines
 RewriteRule ^sitemap\.xml - [L]
 
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule .* index.php
 
 # php -- BEGIN cPanel-generated handler, do not edit

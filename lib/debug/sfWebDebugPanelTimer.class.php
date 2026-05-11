@@ -87,4 +87,9 @@ class sfWebDebugPanelTimer extends sfWebDebugPanel
   {
     return null !== self::$startTime ? sprintf('%.0f', (microtime(true) - self::$startTime) * 1000) : 0;
   }
+
+  public function getTotalTimeValue(): string
+  {
+    return $this->getTotalTime().' ms';
+  }
 }

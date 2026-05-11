@@ -17,7 +17,7 @@
  * @author     Fabien Potencier <fabien.potencier@symfony-project.com>
  * @version    SVN: $Id: sfRoute.class.php 32939 2011-08-22 13:40:06Z fabien $
  */
-class sfRoute implements Serializable
+class sfRoute
 {
   protected
     $isBound           = false,
@@ -35,7 +35,9 @@ class sfRoute implements Serializable
     $defaults          = array(),
     $requirements      = array(),
     $tokens            = array(),
-    $customToken       = false;
+    $customToken       = false,
+    $firstOptional     = 0,
+    $segments          = array();
 
   /**
    * Constructor.
@@ -841,7 +843,19 @@ class sfRoute implements Serializable
     }
   }
 
-  public function serialize()
+  public function __serialize(): array
+  {
+    $this->compile();
+    return [$this->tokens, $this->defaultOptions, $this->options, $this->pattern, $this->staticPrefix, $this->regex, $this->variables, $this->defaults, $this->requirements, $this->suffix, $this->customToken];
+  }
+
+  public function __unserialize(array $data): void
+  {
+    [$this->tokens, $this->defaultOptions, $this->options, $this->pattern, $this->staticPrefix, $this->regex, $this->variables, $this->defaults, $this->requirements, $this->suffix, $this->customToken] = $data;
+    $this->compiled = true;
+  }
+
+  public function serialize(): string
   {
     // always serialize compiled routes
     $this->compile();
@@ -849,7 +863,7 @@ class sfRoute implements Serializable
     return serialize(array($this->tokens, $this->defaultOptions, $this->options, $this->pattern, $this->staticPrefix, $this->regex, $this->variables, $this->defaults, $this->requirements, $this->suffix, $this->customToken));
   }
 
-  public function unserialize($data)
+  public function unserialize($data): void
   {
     list($this->tokens, $this->defaultOptions, $this->options, $this->pattern, $this->staticPrefix, $this->regex, $this->variables, $this->defaults, $this->requirements, $this->suffix, $this->customToken) = unserialize($data);
     $this->compiled = true;

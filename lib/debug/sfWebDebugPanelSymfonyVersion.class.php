@@ -25,6 +25,7 @@ class sfWebDebugPanelSymfonyVersion extends sfWebDebugPanel
 
   public function getPanelTitle()
   {
+    return 'Kernel';
   }
 
   public function getPanelContent()

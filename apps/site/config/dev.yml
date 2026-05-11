@@ -1,0 +1,15 @@
+# apps/site/config/dev.yml
+#
+# Development environment settings for 7x Primer Framework v1.5.
+# Read by public/index_dev.php at boot time.
+
+dev:
+  # IP addresses and CIDR ranges allowed to access the dev front controller
+  # (public/index_dev.php). Requests from any other address receive 403.
+  # Add individual IPs or CIDR blocks as needed.
+  allowed_ips:
+    - '127.0.0.1'
+    - '::1'
+    - '192.168.0.0/16'
+    - '10.0.0.0/8'
+    - '50.191.224.82'

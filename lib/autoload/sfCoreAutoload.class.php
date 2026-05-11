@@ -11,7 +11,7 @@
 /**
  * The current symfony version.
  */
-define('SYMFONY_VERSION', '1.4.20');
+define('SYMFONY_VERSION', '1.5.0.3');
 
 /**
  * sfCoreAutoload class.
@@ -244,6 +244,7 @@ class sfCoreAutoload
     'sftimer' => 'debug/sfTimer.class.php',
     'sftimermanager' => 'debug/sfTimerManager.class.php',
     'sfwebdebug' => 'debug/sfWebDebug.class.php',
+    'sfwebdebugsf2' => 'debug/sfWebDebugSf2.class.php',
     'sfwebdebugpanel' => 'debug/sfWebDebugPanel.class.php',
     'sfwebdebugpanelcache' => 'debug/sfWebDebugPanelCache.class.php',
     'sfwebdebugpanelconfig' => 'debug/sfWebDebugPanelConfig.class.php',

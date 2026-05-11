@@ -27,6 +27,7 @@ class sfWebDebugPanelMemory extends sfWebDebugPanel
 
   public function getPanelTitle()
   {
+    return 'Memory';
   }
 
   public function getPanelContent()

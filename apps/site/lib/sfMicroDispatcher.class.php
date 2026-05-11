@@ -43,6 +43,7 @@ class sfMicroDispatcher
   private readonly string $appDir;
   private sfEventDispatcher $eventDispatcher;
   private sfPatternRouting  $routing;
+  private ?sfWebDebug       $webDebug = null;
 
   // ── Boot ───────────────────────────────────────────────────────────────────
 
@@ -59,6 +60,31 @@ class sfMicroDispatcher
       'generate_shortest_url'            => false,
       'extra_parameters_as_query_string' => true,
     ]);
+
+    if ($this->debug) {
+      // sfConfig so sfWebDebug panels see the values they test for.
+      sfConfig::add([
+        'sf_debug'           => true,
+        'sf_logging_enabled' => true,
+        'sf_cache'           => false,
+        'sf_web_debug'       => true,
+      ]);
+
+      // sfVarLogger captures every log entry emitted via sfEventDispatcher;
+      // sfWebDebug reads those entries back to populate the Logs panel.
+      $varLogger      = new sfVarLogger($this->eventDispatcher, [
+        'level'        => sfLogger::DEBUG,
+        'auto_shutdown' => false,
+      ]);
+      $this->webDebug = new sfWebDebugSf2($this->eventDispatcher, $varLogger, [
+        'image_root_path'    => '/sf/sf_web_debug/images',
+        'request_parameters' => $_GET,
+      ]);
+      // Remove panels that require a full sfContext instance (not available
+      // in sfMicroDispatcher) to prevent fatal errors.
+      $this->webDebug->removePanel('config');
+      $this->webDebug->removePanel('view');
+    }
   }
 
   // ── Private pipeline steps ─────────────────────────────────────────────────
@@ -140,16 +166,28 @@ class sfMicroDispatcher
     // sfPatternRouting::findRoute() returns an array with:
     //   ['name' => routeName, 'parameters' => [module, action, ...]]
     $uri        = (string) parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH);
+
+    // When the request goes through a visible PHP script (e.g. /index_dev.php/version)
+    // Apache does NOT rewrite it, so REQUEST_URI contains the script name.
+    // Strip it so sfPatternRouting sees /version instead of /index_dev.php/version.
+    $scriptName = $_SERVER['SCRIPT_NAME'] ?? '';
+    if ($scriptName !== '' && $scriptName !== '/' && str_starts_with($uri, $scriptName)) {
+      $uri = substr($uri, strlen($scriptName)) ?: '/';
+    }
     $module     = 'status';
     $action     = 'error404';
     $httpStatus = 200;
     $routeName  = '(none)';
 
     try {
-      $match     = $this->routing->findRoute($uri);
-      $routeName = $match['name'];
-      $module    = $match['parameters']['module'] ?? 'status';
-      $action    = $match['parameters']['action'] ?? 'index';
+      $match = $this->routing->findRoute($uri);
+      if ($match !== false) {
+        $routeName = $match['name'];
+        $module    = $match['parameters']['module'] ?? 'status';
+        $action    = $match['parameters']['action'] ?? 'index';
+      } else {
+        $httpStatus = 404;
+      }
     } catch (Exception) {
       $httpStatus = 404;
     }
@@ -226,10 +264,29 @@ class sfMicroDispatcher
     header('Content-Type: text/html; charset=utf-8');
     http_response_code($httpStatus);
 
+    // When the debug toolbar is active, buffer the full HTML response so
+    // sfWebDebug::injectToolbar() can splice its CSS/JS/HTML into the page
+    // (before </head> for styles, before </body> for the bar itself).
+    if ($this->webDebug !== null) {
+      ob_start();
+    }
+
     if (is_file($layoutFile)) {
       $this->decorate($layoutFile, $content, $vars);
     } else {
       echo $content;
+    }
+
+    if ($this->webDebug !== null) {
+      $this->webDebug->setRequestInfo([
+        'method'     => $_SERVER['REQUEST_METHOD'] ?? 'GET',
+        'status'     => $httpStatus,
+        'route'      => $routeName,
+        'controller' => $module.'Actions',
+        'action'     => $action,
+        'uri'        => $uri,
+      ]);
+      echo $this->webDebug->injectToolbar((string) ob_get_clean());
     }
   }
 }

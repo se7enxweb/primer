@@ -100,7 +100,7 @@
 <body>
 
   <header class="sf-header">
-    <span class="sf-header-logo">7x Symfony<em>One</em></span>
+    <span class="sf-header-logo">7x <em>Primer</em></span>
     <span class="sf-header-pill">1.5-dev &bull; PHP 8.5.x Compatible</span>
     <span class="sf-header-env"><?php echo htmlspecialchars($sf_app ?? '') ?>/<?php echo htmlspecialchars($sf_env ?? '') ?></span>
   </header>
@@ -110,8 +110,8 @@
   </main>
 
   <footer class="sf-footer">
-    &copy; 2004 &ndash;2026 <a href="https://se7enx.com">7x</a>
-    &mdash; <a href="https://github.com/se7enxweb/symfony1">7x Symfony 1.5 on GitHub</a>
+    &copy; 2004 &ndash; 2026 <a href="https://se7enx.com">7x</a>
+    &mdash; <a href="https://github.com/se7enxweb/primer">7x Primer 1.5 on GitHub</a>
   </footer>
 
 </body>
