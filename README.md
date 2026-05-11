@@ -1,11 +1,11 @@
-# 7x SymfonyOne Framework v1.5 — PHP 8.5 Support (Stable; Open Source)
+# 7x Primer Framework v1.5 — PHP 8.5 Support (Stable; Open Source)
 
 [![PHP](https://img.shields.io/badge/PHP-8.0%2B-blue)](https://php.net/)
-[![symfonyone](https://img.shields.io/badge/symfony-1.5-orange)](https://github.com/se7enxweb/symfonyone)
+[![Primer](https://img.shields.io/badge/primer-1.5-orange)](https://github.com/se7enxweb/primer)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green)](LICENSE)
-[![GitHub issues](https://img.shields.io/github/issues/se7enxweb/symfonyone)](https://github.com/se7enxweb/symfonyone/issues)
+[![GitHub issues](https://img.shields.io/github/issues/se7enxweb/primer)](https://github.com/se7enxweb/primer/issues)
 
-> **7x SymfonyOne Framework v1.5** is the continuing evolution of the original symfony 1.4 framework,
+> **7x Primer Framework v1.5** is the continuing evolution of the original symfony 1.4 framework,
 > now fully compatible with PHP 8.0 through PHP 8.5. Maintained by [7x (se7enx.com)](https://se7enx.com/)
 > and the open-source developer community that has relied on symfony1 for over two decades.
 
@@ -16,7 +16,7 @@
 1. [Project Notice](#1-project-notice)
 2. [Project Status](#2-project-status)
 3. [Who is 7x](#3-who-is-7x)
-4. [What is 7x Symfony Framework?](#4-what-is-7x-symfony-framework)
+4. [What is 7x Primer Framework?](#4-what-is-7x-primer-framework)
 5. [Architecture Overview](#5-architecture-overview)
 6. [Technology Stack](#6-technology-stack)
 7. [Requirements](#7-requirements)
@@ -48,7 +48,7 @@ The symfony 1.4 codebase reached end-of-life in November 2012. Thousands of prod
 applications continued to run on it because its architecture — convention-over-configuration, composable
 action-filter-view pipeline, flexible ORM integration — remained sound and productive.
 
-**7x Symfony Framework v1.5** is the first release branch that brings this codebase fully into the PHP 8.x era.
+**7x Primer Framework v1.5** is the first release branch that brings this codebase fully into the PHP 8.x era.
 
 The `1.5` branch is the current active development branch. Work focuses on:
 
@@ -75,9 +75,9 @@ continue to run on modern, supported PHP versions.
 
 ---
 
-## 4. What is 7x Symfony Framework?
+## 4. What is 7x Primer Framework?
 
-7x Symfony Framework (v1.5) is a PHP 8.x-compatible continuation of the symfony 1.4 MVC web application
+7x Primer Framework (v1.5) is a PHP 8.x-compatible continuation of the symfony 1.4 MVC web application
 framework. It provides:
 
 - A **Model-View-Controller** architecture with clean separation of concerns
@@ -170,7 +170,7 @@ project-root/
 | Component | Version |
 |-----------|---------|
 | Language | PHP **8.0+** (tested through **8.5.6**) |
-| Framework | 7x Symfony Framework **1.5** (symfony1 core) |
+| Framework | 7x Primer Framework **1.5** (symfony1 core) |
 | Autoloading | sfCoreAutoload + Composer PSR-4/classmap (coexistent) |
 | ORM | sfDoctrinePlugin (Doctrine 1.x) · sfPropelPlugin (Propel 1.x) · PDO (direct) |
 | Template Engine | PHP (native) |
@@ -208,7 +208,7 @@ project-root/
 
 ```bash
 # 1. Clone the repository (branch 1.5)
-git clone -b 1.5 https://github.com/se7enxweb/symfonyone.git my-project
+git clone -b 1.5 https://github.com/se7enxweb/primer.git my-project
 cd my-project
 
 # 2. (Optional) Install Composer packages
@@ -357,7 +357,7 @@ composer audit                                      # check for security advisor
 ## 13. Issue Tracker
 
 Submit bugs, feature requests, and improvements at:
-**https://github.com/se7enxweb/symfonyone/issues**
+**https://github.com/se7enxweb/primer/issues**
 
 If you discover a security issue, please report it responsibly by email to
 [security@se7enx.com](mailto:security@se7enx.com) rather than opening a public issue.
@@ -368,11 +368,11 @@ If you discover a security issue, please report it responsibly by email to
 
 | Resource | URL |
 |----------|-----|
-| Repository | github.com/se7enxweb/symfonyone |
+| Repository | github.com/se7enxweb/primer |
 | Release Notes | RELEASE_NOTES.md |
 | Installation Guide | INSTALL.md |
-| Issue Tracker | github.com/se7enxweb/symfonyone/issues |
-| Discussions | github.com/se7enxweb/symfonyone/discussions |
+| Issue Tracker | github.com/se7enxweb/primer/issues |
+| Discussions | github.com/se7enxweb/primer/discussions |
 | 7x Corporate | se7enx.com |
 | Support | support@se7enx.com |
 | Sponsor 7x | sponsor.se7enx.com |
@@ -383,7 +383,7 @@ If you discover a security issue, please report it responsibly by email to
 
 Everyone is encouraged to contribute. To get started:
 
-1. Fork the repository: [github.com/se7enxweb/symfonyone](https://github.com/se7enxweb/symfonyone)
+1. Fork the repository: [github.com/se7enxweb/primer](https://github.com/se7enxweb/primer)
 2. Clone your fork and create a feature branch:
    ```bash
    git checkout -b feature/my-improvement
@@ -398,14 +398,14 @@ Everyone is encouraged to contribute. To get started:
 7. Participate in the code review — maintainers respond promptly
 
 Bug reports, feature requests, and discussions are welcome via the
-[issue tracker](https://github.com/se7enxweb/symfonyone/issues) and
-[GitHub Discussions](https://github.com/se7enxweb/symfonyone/discussions).
+[issue tracker](https://github.com/se7enxweb/primer/issues) and
+[GitHub Discussions](https://github.com/se7enxweb/primer/discussions).
 
 ---
 
 ## 16. Donate & Support
 
-7x Symfony Framework v1.5 is free and open-source. If it has saved you migration time, upgrade costs,
+7x Primer Framework v1.5 is free and open-source. If it has saved you migration time, upgrade costs,
 or kept a production application running, please consider supporting the project:
 
 - [sponsor.se7enx.com](https://sponsor.se7enx.com/) — support subscriptions

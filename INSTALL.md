@@ -1,4 +1,4 @@
-# 7x Symfony Framework v1.5 — Installation & Developer Guide
+# 7x Primer Framework v1.5 — Installation & Developer Guide
 
 > Full installation, web server configuration, route and page examples,
 > database integration patterns, Composer package usage, and the lime test suite.
@@ -25,7 +25,7 @@
 15. [Forms and Validation](#15-forms-and-validation)
 16. [Running the Lime Test Suite](#16-running-the-lime-test-suite)
 17. [Writing Your Own Tests](#17-writing-your-own-tests)
-18. [symfonyone CLI Tasks](#18-symfonyone-cli-tasks)
+18. [7x Primer CLI Tasks](#18-7x-primer-cli-tasks)
 19. [Cache Management](#19-cache-management)
 20. [Deployment Checklist](#20-deployment-checklist)
 21. [Troubleshooting](#21-troubleshooting)
@@ -90,7 +90,7 @@ project-root/
 │       └── templates/
 │           ├── layout.php           Global HTML decorator
 │           └── error404.php         404 fallback
-├── lib/                             symfonyone core library (sfCoreAutoload scans this)
+├── lib/                             7x Primer core library (sfCoreAutoload scans this)
 │   ├── autoload/sfCoreAutoload.class.php
 │   ├── cache/                       Cache backends (sfFileCache, sfAPCCache, …)
 │   ├── config/                      Configuration handlers
@@ -144,7 +144,7 @@ project-root/
 ### Step 1 — Clone the Repository
 
 ```bash
-git clone -b 1.5 https://github.com/se7enxweb/symfonyone.git my-project
+git clone -b 1.5 https://github.com/se7enxweb/primer.git my-project
 cd my-project
 ```
 
@@ -180,7 +180,7 @@ chmod -R 777 apps/site/cache apps/site/log
 ### Step 6 — Verify the Installation
 
 Navigate to your domain or `http://localhost/`. You should be redirected to `/version` where a
-green status dashboard confirms all symfonyone core classes load correctly.
+green status dashboard confirms all 7x Primer core classes load correctly.
 
 > **Verify your DocumentRoot is correct:** only `public/index.php` and `public/.htaccess` should
 > be reachable over HTTP. Accessing `http://yourapp/composer.json` should return 403 or 404 —
@@ -203,7 +203,7 @@ git log --oneline -3
 
 ### How It Works in v1.5
 
-`public/index.php` boots symfonyone's own `sfCoreAutoload` first, then optionally requires
+`public/index.php` boots 7x Primer's own `sfCoreAutoload` first, then optionally requires
 `vendor/autoload.php` if it exists. PHP's `spl_autoload` stack means both coexist cleanly:
 
 ```php
@@ -332,7 +332,7 @@ nginx -t && systemctl reload nginx
 
 ## 6. File Permissions
 
-symfonyone writes to cache and log directories. Set them writable by the web server user:
+7x Primer writes to cache and log directories. Set them writable by the web server user:
 
 ```bash
 # Create directories if they do not exist
@@ -407,7 +407,7 @@ class helloActions extends sfMicroAction
 ?>
 <div class="page hello-page">
     <h1><?php echo $title ?></h1>
-    <p>Hello from 7x Symfony Framework v1.5!</p>
+    <p>Hello from 7x Primer Framework v1.5!</p>
     <p>PHP <?php echo PHP_VERSION ?></p>
     <p><a href="/version">System Status</a></p>
 </div>
@@ -997,7 +997,7 @@ public function executeFetch(): string
 
 ## 15. Forms and Validation
 
-symfonyone ships a full form and validator system under `lib/form/` and `lib/validator/`.
+7x Primer ships a full form and validator system under `lib/form/` and `lib/validator/`.
 
 ### Define a Form Class
 
@@ -1131,7 +1131,7 @@ php test/unit/lib/ArticleTest.php
 
 ---
 
-## 18. symfonyone CLI Tasks
+## 18. 7x Primer CLI Tasks
 
 The task system is accessed via `php symfony` from the project root.
 
@@ -1176,7 +1176,7 @@ composer show                                   # list installed packages
 
 ## 19. Cache Management
 
-### Clear the symfonyone Cache
+### Clear the 7x Primer Cache
 
 ```bash
 php symfony cc
@@ -1217,7 +1217,7 @@ php -l lib/routing/sfRoute.class.php
 ### Post-Deployment
 
 ```bash
-# 5. Clear the symfonyone cache
+# 5. Clear the 7x Primer cache
 php symfony cc
 
 # 6. Set correct file permissions
@@ -1286,12 +1286,12 @@ installed packages.
 **Q: Tests fail with PHP 8.x type errors.**
 A: You may be running a version of a test file that was not updated to the PHP 8.x baseline. Check
 the `1.5` branch for the latest test files. Report regressions at:
-[github.com/se7enxweb/symfonyone/issues](https://github.com/se7enxweb/symfonyone/issues)
+[github.com/se7enxweb/primer/issues](https://github.com/se7enxweb/primer/issues)
 
 ---
 
 **Q: `preg_replace()` deprecated /e modifier warning.**
-A: All `/e` modifier usage has been removed from the symfonyone core in v1.5. If you see this warning it
+A: All `/e` modifier usage has been removed from the 7x Primer core in v1.5. If you see this warning it
 is in custom code or a third-party plugin. Replace with `preg_replace_callback()`.
 
 ---
