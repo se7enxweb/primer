@@ -1,10 +1,10 @@
 {
   "name": "se7enxweb/primer",
-  "description": "7x Symfony 1.5 — PHP 8.x - 8.5.6 Support upgrade of symfony 1.4.x (branch 1.5) maintained by 7x",
+  "description": "7x Primer 1.5 — PHP 8.x - 8.5.6 Support upgrade of symfony 1.4.x (branch 1.5) maintained by 7x",
   "type": "library",
   "license": "MIT",
-  "keywords": ["symfony", "symfony1", "framework", "php8"],
-  "homepage": "https://github.com/se7enxweb/symfonyone",
+  "keywords": ["primer", "symfony", "symfony1", "framework", "php8"],
+  "homepage": "https://github.com/se7enxweb/primer",
   "authors": [
     {
       "name": "7x",
