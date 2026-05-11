@@ -22,15 +22,16 @@
 7. [Requirements](#7-requirements)
 8. [Quick Start](#8-quick-start)
 9. [Main Features](#9-main-features)
-10. [Building Pages, Routes, and Database Results](#10-building-pages-routes-and-database-results)
-11. [Installation](#11-installation)
-12. [Key CLI & Task Reference](#12-key-cli--task-reference)
-13. [Issue Tracker](#13-issue-tracker)
-14. [Where to Get More Help](#14-where-to-get-more-help)
-15. [How to Contribute](#15-how-to-contribute)
-16. [Donate & Support](#16-donate--support)
-17. [Copyright](#17-copyright)
-18. [License](#18-license)
+10. [Developer Toolbar](#10-developer-toolbar)
+11. [Building Pages, Routes, and Database Results](#11-building-pages-routes-and-database-results)
+12. [Installation](#12-installation)
+13. [Key CLI & Task Reference](#13-key-cli--task-reference)
+14. [Issue Tracker](#14-issue-tracker)
+15. [Where to Get More Help](#15-where-to-get-more-help)
+16. [How to Contribute](#16-how-to-contribute)
+17. [Donate & Support](#17-donate--support)
+18. [Copyright](#18-copyright)
+19. [License](#19-license)
 
 ---
 
@@ -246,7 +247,88 @@ composer install
 
 ---
 
-## 10. Building Pages, Routes, and Database Results
+## 10. Developer Toolbar
+
+When running in the **dev environment**, 7x Primer injects the **7x Primer Developer Toolbar** — a dark, fixed-bottom debug bar — into every HTML response. It shows request metadata, logs, memory usage, and timing information at a glance.
+
+### Accessing the Dev Environment
+
+The dev entry point is `public/index_dev.php`. Prefix any URL path with `/index_dev.php` to use it:
+
+```
+# Production URL (no toolbar)
+https://yourapp.com/articles/hello-world
+
+# Development URL (toolbar visible)
+https://yourapp.com/index_dev.php/articles/hello-world
+
+# Home page in dev mode
+https://yourapp.com/index_dev.php/
+
+# Version / status page in dev mode
+https://yourapp.com/index_dev.php/version
+```
+
+> **Note:** `index_dev.php` is IP-guarded. Only requests from allowlisted addresses are served — all others receive `403 Forbidden`. See [IP Allowlist](#ip-allowlist) below.
+
+### IP Allowlist
+
+The allowed IP list is managed in `apps/site/config/dev.yml`. Edit this file to add your local or team IP addresses — no code changes needed.
+
+```yaml
+# apps/site/config/dev.yml
+dev:
+  # IP addresses and CIDR ranges allowed to access public/index_dev.php.
+  # Requests from any other address receive 403 Forbidden.
+  allowed_ips:
+    - '127.0.0.1'       # IPv4 localhost
+    - '::1'             # IPv6 localhost
+    - '192.168.0.0/16'  # Private LAN (Class C)
+    - '10.0.0.0/8'      # Private LAN (Class A)
+    - '203.0.113.42'    # Example: your office or home static IP
+```
+
+To find your current public IP:
+
+```bash
+curl -s https://ifconfig.me
+# or
+curl -s https://api.ipify.org
+```
+
+Add that IP under `allowed_ips`, save the file, and reload — no server restart required.
+
+### Toolbar Layout
+
+The toolbar is fixed to the bottom of every page. It has three display states, each persisted across reloads via `localStorage`:
+
+| State | How to enter | What you see |
+|---|---|---|
+| **Full** | Default on first load | Complete bar across the bottom |
+| **Collapsed** | Click the **7x logo** (far left) | Bar stays, panel buttons hidden, × visible |
+| **Minimized** | Click the **×** button (far right) | 40 px red circle in the bottom-right corner |
+
+Click the **7x logo** in any reduced state to restore the full bar.
+
+**Left info block** — always visible in full/collapsed mode:
+
+| Cell | Example | Description |
+|---|---|---|
+| Method | `GET` | HTTP method, colour-coded |
+| Status | `200` | HTTP response status |
+| Route | `version` | Matched route name |
+| Controller | `versionActions` | Action class name |
+| Time | `4 ms` | Total dispatch time |
+
+**Right panel list** — click any item to open its detail popup:
+
+- **Logs** — all `sfVarLogger` entries, filterable by Info / Warning / Error
+- **Memory** — peak memory usage
+- **Kernel** — 7x Primer version (`1.5.0.3`)
+
+---
+
+## 11. Building Pages, Routes, and Database Results
 
 See [INSTALL.md](INSTALL.md) for full step-by-step instructions. Below is the three-minute version.
 
@@ -313,7 +395,7 @@ class articleActions extends sfMicroAction
 
 ---
 
-## 11. Installation
+## 12. Installation
 
 See **[INSTALL.md](INSTALL.md)** for the complete step-by-step guide, including:
 
@@ -328,7 +410,7 @@ See **[INSTALL.md](INSTALL.md)** for the complete step-by-step guide, including:
 
 ---
 
-## 12. Key CLI & Task Reference
+## 13. Key CLI & Task Reference
 
 ```bash
 # ── Test Suite ───────────────────────────────────────────────────────────────
@@ -354,7 +436,7 @@ composer audit                                      # check for security advisor
 
 ---
 
-## 13. Issue Tracker
+## 14. Issue Tracker
 
 Submit bugs, feature requests, and improvements at:
 **https://github.com/se7enxweb/primer/issues**
@@ -364,7 +446,7 @@ If you discover a security issue, please report it responsibly by email to
 
 ---
 
-## 14. Where to Get More Help
+## 15. Where to Get More Help
 
 | Resource | URL |
 |----------|-----|
@@ -379,7 +461,7 @@ If you discover a security issue, please report it responsibly by email to
 
 ---
 
-## 15. How to Contribute
+## 16. How to Contribute
 
 Everyone is encouraged to contribute. To get started:
 
@@ -403,7 +485,7 @@ Bug reports, feature requests, and discussions are welcome via the
 
 ---
 
-## 16. Donate & Support
+## 17. Donate & Support
 
 7x Primer Framework v1.5 is free and open-source. If it has saved you migration time, upgrade costs,
 or kept a production application running, please consider supporting the project:
@@ -421,7 +503,7 @@ Every contribution funds:
 
 ---
 
-## 17. Copyright
+## 18. Copyright
 
 ```
 Copyright (C) 2004-2026 7x (se7enx.com). All rights reserved.
@@ -431,7 +513,7 @@ Copyright (C) 2004-2006 Sean Kerr <sean@code-box.org>
 
 ---
 
-## 18. License
+## 19. License
 
 Licensed under the **MIT License**. See [LICENSE](LICENSE) for the full license text.
 

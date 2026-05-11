@@ -14,21 +14,22 @@
 4. [Composer Dependency Management](#4-composer-dependency-management)
 5. [Web Server Configuration](#5-web-server-configuration)
 6. [File Permissions](#6-file-permissions)
-7. [Building Your First Page](#7-building-your-first-page)
-8. [Routing — Full Reference](#8-routing--full-reference)
-9. [Actions — Request, Parameters, Redirects](#9-actions--request-parameters-redirects)
-10. [Templates & Layouts](#10-templates--layouts)
-11. [Database Integration — PDO (Built-in)](#11-database-integration--pdo-built-in)
-12. [Database Integration — sfDoctrinePlugin (ORM)](#12-database-integration--sfdoctrineplugin-orm)
-13. [Database Integration — sfPropelPlugin (ORM)](#13-database-integration--sfpropelplugin-orm)
-14. [Composer Packages in Actions](#14-composer-packages-in-actions)
-15. [Forms and Validation](#15-forms-and-validation)
-16. [Running the Lime Test Suite](#16-running-the-lime-test-suite)
-17. [Writing Your Own Tests](#17-writing-your-own-tests)
-18. [7x Primer CLI Tasks](#18-7x-primer-cli-tasks)
-19. [Cache Management](#19-cache-management)
-20. [Deployment Checklist](#20-deployment-checklist)
-21. [Troubleshooting](#21-troubleshooting)
+7. [Developer Toolbar](#7-developer-toolbar)
+8. [Building Your First Page](#8-building-your-first-page)
+9. [Routing — Full Reference](#9-routing--full-reference)
+10. [Actions — Request, Parameters, Redirects](#10-actions--request-parameters-redirects)
+11. [Templates & Layouts](#11-templates--layouts)
+12. [Database Integration — PDO (Built-in)](#12-database-integration--pdo-built-in)
+13. [Database Integration — sfDoctrinePlugin (ORM)](#13-database-integration--sfdoctrineplugin-orm)
+14. [Database Integration — sfPropelPlugin (ORM)](#14-database-integration--sfpropelplugin-orm)
+15. [Composer Packages in Actions](#15-composer-packages-in-actions)
+16. [Forms and Validation](#16-forms-and-validation)
+17. [Running the Lime Test Suite](#17-running-the-lime-test-suite)
+18. [Writing Your Own Tests](#18-writing-your-own-tests)
+19. [7x Primer CLI Tasks](#19-7x-primer-cli-tasks)
+20. [Cache Management](#20-cache-management)
+21. [Deployment Checklist](#21-deployment-checklist)
+22. [Troubleshooting](#22-troubleshooting)
 
 ---
 
@@ -348,7 +349,110 @@ chmod -R 755 apps/site/cache apps/site/log
 
 ---
 
-## 7. Building Your First Page
+## 7. Developer Toolbar
+
+The **7x Primer Developer Toolbar** is a dark, fixed-bottom debug bar injected into every HTML response when running through the dev front controller. It provides real-time request diagnostics, log inspection, and memory/timing data — all without touching production traffic.
+
+### Enabling the Dev Environment
+
+The dev entry point is `public/index_dev.php`. Prefix any URL path with `/index_dev.php` to activate it:
+
+```
+# Production front controller (no toolbar, no debug output)
+https://yourapp.com/
+https://yourapp.com/articles/hello-world
+
+# Development front controller (toolbar injected, SF_DEBUG=true)
+https://yourapp.com/index_dev.php/
+https://yourapp.com/index_dev.php/articles/hello-world
+https://yourapp.com/index_dev.php/version
+```
+
+> The script name (`/index_dev.php`) is automatically stripped from the URI before routing — every route defined in `routing.php` works identically in both environments.
+
+### IP Allowlist — `apps/site/config/dev.yml`
+
+`index_dev.php` reads its allowlist from `apps/site/config/dev.yml` at boot time. Requests from addresses not in the list immediately receive `403 Forbidden` — the framework never boots for those requests.
+
+**File location:** `apps/site/config/dev.yml`
+
+```yaml
+# apps/site/config/dev.yml
+#
+# Allowed IP addresses and CIDR ranges for public/index_dev.php.
+# Requests from any other address receive 403 Forbidden.
+# No server restart is required after editing this file.
+
+dev:
+  allowed_ips:
+    - '127.0.0.1'        # IPv4 localhost (always safe to keep)
+    - '::1'              # IPv6 localhost
+    - '192.168.0.0/16'   # Private LAN — Class C (adjust to your subnet)
+    - '10.0.0.0/8'       # Private LAN — Class A
+    # Add your static office/home IP below:
+    # - '203.0.113.42'
+```
+
+**To find your current public IP:**
+
+```bash
+curl -s https://ifconfig.me
+# or
+curl -s https://api.ipify.org
+```
+
+Add that IP as a new list entry and save — the next request picks up the change immediately.
+
+**CIDR notation** is supported for ranges. Both IPv4 and IPv6 addresses are matched. The fallback when the file is missing or unreadable is `['127.0.0.1', '::1']` only.
+
+### What the Toolbar Shows
+
+The toolbar is fixed to the bottom of the page. It has three persistent display states stored in `localStorage` per host + path:
+
+| State | How to enter | What you see |
+|---|---|---|
+| **Full** | Default / click logo when reduced | Complete bar across the bottom of the page |
+| **Collapsed** | Click the **7x logo** (far left) | Bar stays visible, panel buttons hidden, × stays |
+| **Minimized** | Click the **×** button (far right) | 40 px red circle in the bottom-right corner |
+
+Clicking the **7x logo** from any reduced state restores the full bar. States survive page reloads.
+
+**Left info block** — always visible in full / collapsed mode:
+
+| Cell | Example value | Description |
+|---|---|---|
+| Method | `GET` | HTTP request method, colour-coded (blue = GET, amber = POST, …) |
+| Status | `200` | HTTP response status code, colour-coded (green = 2xx, red = 5xx) |
+| Route | `articles_show` | Name of the matched route from `routing.php` |
+| Controller | `articleActions` | Action class that handled the request |
+| Time | `12 ms` | Total dispatch time reported by sfTimerManager |
+
+**Right panel list** — click any item to open a detail popup:
+
+- **Logs** — all log entries captured by `sfVarLogger`, filterable by Info / Warning / Error
+- **Memory** — peak PHP memory usage for this request
+- **Kernel** — current 7x Primer version (`1.5.0.3`)
+
+### Serving Toolbar Assets
+
+The toolbar images (icons, close button, etc.) are served from `/sf/sf_web_debug/images/`. This path is provided by a symlink at `public/sf` → `data/web/sf`. The symlink is included in the repository; no setup is required.
+
+Verify it is in place:
+
+```bash
+ls -la public/sf
+# Should show: public/sf -> ../data/web/sf  (or similar absolute path)
+```
+
+If the symlink is missing:
+
+```bash
+cd public && ln -s ../data/web/sf sf
+```
+
+---
+
+## 8. Building Your First Page
 
 This section walks through creating a `hello` module from scratch, covering route, action,
 template, and layout in full.
@@ -444,7 +548,7 @@ curl -s http://localhost/hello/Alice
 
 ---
 
-## 8. Routing — Full Reference
+## 9. Routing — Full Reference
 
 Routing is configured in `apps/{app}/config/routing.php`. The `$routing` variable is an
 `sfPatternRouting` instance provided by `sfMicroDispatcher`.
@@ -505,7 +609,7 @@ public function executeArchive(): string
 
 ---
 
-## 9. Actions — Request, Parameters, Redirects
+## 10. Actions — Request, Parameters, Redirects
 
 ### Reading GET / POST Parameters
 
@@ -553,7 +657,7 @@ public function executeShow(): string
 
 ---
 
-## 10. Templates & Layouts
+## 11. Templates & Layouts
 
 ### Passing Variables to Templates
 
@@ -595,7 +699,7 @@ The template output is injected into `$content` automatically by the dispatcher.
 
 ---
 
-## 11. Database Integration — PDO (Built-in)
+## 12. Database Integration — PDO (Built-in)
 
 PDO is available in any standard PHP installation and requires no additional configuration
 beyond your database credentials.
@@ -810,7 +914,7 @@ CREATE TABLE articles (
 
 ---
 
-## 12. Database Integration — sfDoctrinePlugin (ORM)
+## 13. Database Integration — sfDoctrinePlugin (ORM)
 
 `sfDoctrinePlugin` wraps Doctrine 1.x ORM. It is bundled in `lib/plugins/sfDoctrinePlugin/`.
 
@@ -884,7 +988,7 @@ public function executeShow(): string
 
 ---
 
-## 13. Database Integration — sfPropelPlugin (ORM)
+## 14. Database Integration — sfPropelPlugin (ORM)
 
 `sfPropelPlugin` wraps Propel 1.x ORM, bundled in `lib/plugins/sfPropelPlugin/`.
 
@@ -931,7 +1035,7 @@ public function executeIndex(): string
 
 ---
 
-## 14. Composer Packages in Actions
+## 15. Composer Packages in Actions
 
 After running `composer require vendor/package`, the installed library is available anywhere
 via the Composer autoloader (which `index.php` loads if `vendor/autoload.php` exists).
@@ -995,7 +1099,7 @@ public function executeFetch(): string
 
 ---
 
-## 15. Forms and Validation
+## 16. Forms and Validation
 
 7x Primer ships a full form and validator system under `lib/form/` and `lib/validator/`.
 
@@ -1055,7 +1159,7 @@ public function executeCreate(): string
 
 ---
 
-## 16. Running the Lime Test Suite
+## 17. Running the Lime Test Suite
 
 ### Run All Unit Tests
 
@@ -1089,7 +1193,7 @@ All tests passed (42/42).
 
 ---
 
-## 17. Writing Your Own Tests
+## 18. Writing Your Own Tests
 
 Lime is a TAP-based framework. Place test files in `test/unit/` following the `*Test.php`
 naming convention.
@@ -1131,7 +1235,7 @@ php test/unit/lib/ArticleTest.php
 
 ---
 
-## 18. 7x Primer CLI Tasks
+## 19. 7x Primer CLI Tasks
 
 The task system is accessed via `php symfony` from the project root.
 
@@ -1174,7 +1278,7 @@ composer show                                   # list installed packages
 
 ---
 
-## 19. Cache Management
+## 20. Cache Management
 
 ### Clear the 7x Primer Cache
 
@@ -1196,7 +1300,7 @@ php -r "opcache_reset();"
 
 ---
 
-## 20. Deployment Checklist
+## 21. Deployment Checklist
 
 ### Pre-Deployment
 
@@ -1248,7 +1352,7 @@ curl -Is http://yoursite.com/../composer.json | head -3
 
 ---
 
-## 21. Troubleshooting
+## 22. Troubleshooting
 
 **Q: I get a blank page or 500 error after installation.**
 A: Check PHP error logs:
